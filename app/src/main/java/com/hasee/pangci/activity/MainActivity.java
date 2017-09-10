@@ -1,5 +1,6 @@
 package com.hasee.pangci.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -47,13 +48,14 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
         mTabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);
+//        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);
         mNavigationView = (NavigationView) findViewById(R.id.main_navigation_view);
         mViewPager = (ViewPager) findViewById(R.id.main_view_pager);
     }
 
     public void initData() {
         mToolbar.setTitle("主页");
+        mToolbar.setTitleTextColor(Color.WHITE);
         for (int i = 0; i < tabTitles.length; i++) {
             fragmentArrayList.add(fragments[i]);
         }
