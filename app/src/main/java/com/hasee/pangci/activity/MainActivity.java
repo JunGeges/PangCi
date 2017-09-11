@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.R;
+import com.hasee.pangci.Utils.DateFormat;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
 import com.hasee.pangci.bean.User;
 import com.hasee.pangci.fragment.MemberFragment;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     @BindView(R.id.main_tab_layout)
     TabLayout mTabLayout;
     @BindView(R.id.main_tool_bar)
@@ -171,9 +172,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.navigation_account_tv:
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                startActivity(intent);
-                mDrawerLayout.closeDrawers();
+                Log.i("TAG", "onClick: "+mNavigationAccountTv.getText().toString());
+                if (mNavigationAccountTv.getText().toString().equals("点击登录")) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+                } else {
+                    Toast.makeText(this, "您已经登录", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.main_fab:
@@ -183,14 +189,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleEventBus(User user){
-        Log.i("TAG", "handleEventBus: "+user.toString());
+    public void handleEventBus(User user) {
+        Log.i("TAG", "handleEventBus: " + user.getUserAccount());
         mDrawerLayout.openDrawer(Gravity.START);
         mNavigationMemberInfoLl.setVisibility(View.VISIBLE);
         mNavigationAccountTv.setText(user.getUserAccount());
-        mNavigationMemberLevelTv.setText("会员等级:"+user.getMemberLevel());
-        mNavigationResidueTv.setText(",会员剩余天数"+user.getMemberEndDate());
-        Log.i("TAG",mNavigationAccountTv.getText().toString());
+        mNavigationMemberLevelTv.setText("会员等级:" + user.getMemberLevel());
+        int residueDays = DateFormat.differentDaysByMillisecond(user.getMemberStartDate().getDate(), user.getMemberEndDate().getDate());
+        mNavigationResidueTv.setText(",会员剩余天数:" + residueDays + "天");
+        Log.i("TAG", mNavigationAccountTv.getText().toString());
     }
 
     @Override

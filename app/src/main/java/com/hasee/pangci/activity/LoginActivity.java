@@ -90,8 +90,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             User user = new User(userTemp.getUserAccount(), userTemp.getUserPassword(), userTemp.getUserRegisterTime(), userTemp.getUserHeadImg(), userTemp.getMemberLevel(), userTemp.getMemberStartDate(), userTemp.getMemberEndDate());
                             EventBus.getDefault().post(user);
                         }
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
                         finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "账号或密码输入错误!", Toast.LENGTH_SHORT).show();

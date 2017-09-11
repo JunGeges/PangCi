@@ -7,7 +7,7 @@
                     android:id="@+id/navigation_menu_item_member"
                     android:checkable="true"
                     android:icon="@drawable/member"
-                    android:title="会员中心"/>
+                    android:title="立即充值"/>
 
                 <item
                     android:id="@+id/navigation_menu_item_flock"
