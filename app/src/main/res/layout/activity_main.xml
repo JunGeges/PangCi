@@ -55,16 +55,18 @@
 
             </android.support.v4.view.ViewPager>
 
+
         </FrameLayout>
 
-<!--        <android.support.design.widget.FloatingActionButton
+        <android.support.design.widget.FloatingActionButton
+            app:rippleColor="#56abe4"
+            app:backgroundTint="#56abe4"
             android:id="@+id/main_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            app:layout_anchorGravity="bottom|end"
-            android:src="@mipmap/ic_launcher"
-            />-->
+            android:src="@drawable/play_ico"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

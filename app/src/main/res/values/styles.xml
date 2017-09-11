@@ -7,10 +7,27 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="AppSplash" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#673AB7</item>
+        <item name="colorPrimaryDark">#512DA8</item>
+        <item name="colorAccent">#FF4081</item>
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+
+    <color name="window_background">#FFF5F5F5</color>
+
     <style name="ShowDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@drawable/exit_alter_dialog</item>
         <!-- 设置有无标题 -->
         <item name="android:gravity">bottom</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
+
 </resources>

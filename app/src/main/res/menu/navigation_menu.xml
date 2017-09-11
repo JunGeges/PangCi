@@ -1,49 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:title="会员权益">
+            <menu>
 
-    <item android:title="会员权益">
-        <menu>
+                <item
+                    android:id="@+id/navigation_menu_item_member"
+                    android:checkable="true"
+                    android:icon="@drawable/member"
+                    android:title="会员中心"/>
 
-            <item
-                android:id="@+id/navigation_menu_item_member"
-                android:icon="@drawable/member"
-                android:title="会员中心" />
-
-            <item
-                android:id="@+id/navigation_menu_item_flock"
-                android:icon="@drawable/flock"
-                android:title="加入云群" />
-
-
-        </menu>
-    </item>
-
-    <item android:title="应用相关">
-        <menu>
-
-            <item
-                android:id="@+id/navigation_menu_item_cache"
-                android:icon="@drawable/cache"
-                android:title="清理缓存" />
-
-            <item
-                android:id="@+id/navigation_menu_item_version"
-                android:icon="@drawable/version"
-                android:title="版本更新" />
-
-            <item
-                android:id="@+id/navigation_menu_item_about"
-                android:icon="@drawable/about"
-                android:title="关于我们" />
-
-            <item
-                android:id="@+id/navigation_menu_item_exit"
-                android:icon="@drawable/exit"
-                android:title="退出当前" />
-
-        </menu>
+                <item
+                    android:id="@+id/navigation_menu_item_flock"
+                    android:checkable="true"
+                    android:icon="@drawable/flock"
+                    android:title="加入云群"/>
 
 
-    </item>
+            </menu>
+        </item>
+
+
+        <item android:title="应用相关">
+            <menu>
+
+                <item
+                    android:id="@+id/navigation_menu_item_cache"
+                    android:checkable="true"
+                    android:icon="@drawable/cache"
+                    android:title="清理缓存"/>
+
+                <item
+                    android:id="@+id/navigation_menu_item_version"
+                    android:checkable="true"
+                    android:icon="@drawable/version"
+                    android:title="版本更新"/>
+
+                <item
+                    android:id="@+id/navigation_menu_item_about"
+                    android:checkable="true"
+                    android:icon="@drawable/about"
+                    android:title="关于我们"/>
+
+                <item
+                    android:id="@+id/navigation_menu_item_exit"
+                    android:checkable="true"
+                    android:icon="@drawable/exit"
+                    android:title="退出当前"/>
+
+            </menu>
+
+
+        </item>
 
 </menu>
