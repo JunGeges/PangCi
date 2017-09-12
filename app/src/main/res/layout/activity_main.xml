@@ -22,9 +22,10 @@
                 android:id="@+id/main_tool_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                app:navigationIcon="@drawable/main_option"
+                android:background="@color/colorPrimaryDark"
+                app:navigationIcon="@drawable/ic_navigation_drawer"
                 app:layout_scrollFlags="scroll|enterAlways"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
                 >
             </android.support.v7.widget.Toolbar>
 

@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             tools:text="会员等级:普通,"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/navigation_residue_tv"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             tools:text="会员还剩20天"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
 

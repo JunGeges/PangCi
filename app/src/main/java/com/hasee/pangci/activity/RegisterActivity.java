@@ -1,23 +1,115 @@
 package com.hasee.pangci.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.WindowManager;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hasee.pangci.R;
+import com.hasee.pangci.Utils.CommonUtils;
+import com.hasee.pangci.Utils.MessageEvent;
+import com.hasee.pangci.bean.User;
 
-public class RegisterActivity extends AppCompatActivity {
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
+
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+    @BindView(R.id.register_account_et)
+    EditText mAccountEditText;
+    @BindView(R.id.register_password_et)
+    EditText mPasswordEditText;
+    @BindView(R.id.register_password_again_et)
+    EditText mPasswordAgainEt;
+    @BindView(R.id.register_confirm_tv)
+    TextView mConfirmRegisterTv;
+    @BindView(R.id.register_tool_bar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
         setContentView(R.layout.activity_register);
+        ButterKnife.bind(this);
+        mConfirmRegisterTv.setOnClickListener(this);
+        mToolbar.setTitle("注册");
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    private void registerAccount() {
+        final String account = mAccountEditText.getText().toString().trim();
+        final String password = mPasswordEditText.getText().toString().trim();
+        String againPwd = mPasswordAgainEt.getText().toString().trim();
+
+        if (CommonUtils.checkStrIsNull(account, password, againPwd)) {
+            Toast.makeText(this, "选项不能为空!", Toast.LENGTH_SHORT).show();
+        } else if (account.length()<6||password.length()<6) {
+            Toast.makeText(this, "长度不得小于6!", Toast.LENGTH_SHORT).show();
+        } else if (!password.equals(againPwd)) {
+            Toast.makeText(this, "密码输入不一致!", Toast.LENGTH_SHORT).show();
+        } else {
+            BmobQuery<User> bmobQuery = new BmobQuery<>();
+            bmobQuery.addWhereEqualTo("userAccount", account);
+            bmobQuery.findObjects(new FindListener<User>() {
+                @Override
+                public void done(List<User> list, BmobException e) {
+                    if (e == null) {
+                        if (list.size() != 0) {
+                            Toast.makeText(RegisterActivity.this, "账号已存在!", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            insertDataToServer(account, password);
+                        }
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "非法操作!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    private void insertDataToServer(String account, String password) {
+        final User user = new User();
+        user.setUserAccount(account);
+        user.setUserPassword(password);
+        user.setMemberLevel("0");
+        user.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    Toast.makeText(RegisterActivity.this, "注册成功!", Toast.LENGTH_SHORT).show();
+                    EventBus.getDefault().post(new MessageEvent(user));
+                    finish();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "注册失败!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.register_confirm_tv:
+                registerAccount();
+                break;
+        }
     }
 }

@@ -8,10 +8,20 @@ import com.hasee.pangci.bean.User;
 
 public class MessageEvent {
 
-    private final User mUser;
+    private User mUser;
 
     public MessageEvent(User mUser) {
         this.mUser = mUser;
     }
+
+    public User getUser() {
+        return mUser;
+    }
+
+    public void setUser(User user) {
+        mUser = user;
+    }
+
+
 
 }

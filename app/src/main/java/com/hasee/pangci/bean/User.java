@@ -13,8 +13,6 @@ public class User extends BmobObject {
 
     private String userPassword;
 
-    private BmobDate userRegisterTime;
-
     private String userHeadImg;
 
     private String memberLevel;
@@ -26,14 +24,13 @@ public class User extends BmobObject {
     public User() {
     }
 
-    public User(String userAccount, String userPassword, BmobDate userRegisterTime, String userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate) {
+    public User(String userAccount, String userPassword,String userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate) {
         this.userAccount = userAccount;
         this.userPassword = userPassword;
         this.userHeadImg = userHeadImg;
         this.memberLevel = memberLevel;
         this.memberStartDate = memberStartDate;
         this.memberEndDate = memberEndDate;
-        this.userRegisterTime = userRegisterTime;
     }
 
     public String getUserAccount() {
@@ -50,14 +47,6 @@ public class User extends BmobObject {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
-    }
-
-    public BmobDate getUserRegisterTime() {
-        return userRegisterTime;
-    }
-
-    public void setUserRegisterTime(BmobDate userRegisterTime) {
-        this.userRegisterTime = userRegisterTime;
     }
 
     public String getUserHeadImg() {
@@ -97,7 +86,6 @@ public class User extends BmobObject {
         return "User{" +
                 "userAccount='" + userAccount + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", userRegisterTime=" + userRegisterTime +
                 ", userHeadImg='" + userHeadImg + '\'' +
                 ", memberLevel='" + memberLevel + '\'' +
                 ", memberStartDate=" + memberStartDate +

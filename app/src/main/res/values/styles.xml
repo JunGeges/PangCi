@@ -29,5 +29,16 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    //toolBar的文字大小颜色
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/menuTextColor</item>
+    </style>
+
+    //toolBar菜单的颜色和文字
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="actionMenuTextColor">@color/menuTextColor</item> <!--颜色-->
+        <!--<item name="android:textSize">@dimen/toolbar_action_menu_text</item> &lt;!&ndash;字体大小&ndash;&gt;-->
+    </style>
 
 </resources>

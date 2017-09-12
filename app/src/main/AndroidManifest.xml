@@ -25,12 +25,10 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/Base.Theme.DesignDemo">
-
         </activity>
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@style/AppSplash"
-            >
+            android:theme="@style/AppSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -42,6 +40,8 @@
         <activity android:name=".activity.LoginActivity">
         </activity>
         <activity android:name=".activity.RegisterActivity">
+        </activity>
+        <activity android:name=".activity.UpdatePasswordActivity">
         </activity>
     </application>
 
