@@ -9,13 +9,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.R;
-import com.hasee.pangci.Utils.CommonUtils;
-import com.hasee.pangci.Utils.MessageEvent;
+import com.hasee.pangci.Common.CommonUtils;
+import com.hasee.pangci.Common.MessageEvent;
 import com.hasee.pangci.bean.User;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +36,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     TextView mConfirmRegisterTv;
     @BindView(R.id.register_tool_bar)
     Toolbar mToolbar;
+    int[] headIcons = {R.drawable.ic_avatar1, R.drawable.ic_avatar2, R.drawable.ic_avatar3, R.drawable.ic_avatar4, R.drawable.ic_avatar5
+            , R.drawable.ic_avatar6, R.drawable.ic_avatar7, R.drawable.ic_avatar8, R.drawable.ic_avatar9, R.drawable.ic_avatar10, R.drawable.ic_avatar11};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         if (CommonUtils.checkStrIsNull(account, password, againPwd)) {
             Toast.makeText(this, "选项不能为空!", Toast.LENGTH_SHORT).show();
-        } else if (account.length()<6||password.length()<6) {
+        } else if (account.length() < 6 || password.length() < 6) {
             Toast.makeText(this, "长度不得小于6!", Toast.LENGTH_SHORT).show();
         } else if (!password.equals(againPwd)) {
             Toast.makeText(this, "密码输入不一致!", Toast.LENGTH_SHORT).show();
@@ -86,10 +89,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void insertDataToServer(String account, String password) {
+        //给用户随机分配头像
+        Random random = new Random();
         final User user = new User();
         user.setUserAccount(account);
         user.setUserPassword(password);
-        user.setMemberLevel("0");
+        user.setMemberLevel("青铜");
+        user.setUserHeadImg(headIcons[random.nextInt(12)]);//[0,12)之间
         user.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {

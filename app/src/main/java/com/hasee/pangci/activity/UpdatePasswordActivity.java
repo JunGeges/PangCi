@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hasee.pangci.R;
-import com.hasee.pangci.Utils.CommonUtils;
+import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.bean.User;
 
 import java.util.List;

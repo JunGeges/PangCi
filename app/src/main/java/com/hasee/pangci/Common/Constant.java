@@ -1,4 +1,4 @@
-package com.hasee.pangci.Utils;
+package com.hasee.pangci.Common;
 
 /**
  * Created by 高俊 on 2017/9/9.

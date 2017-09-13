@@ -23,20 +23,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
-            android:theme="@style/Base.Theme.DesignDemo">
+            android:name=".activity.MainActivity">
         </activity>
         <activity
-            android:name=".activity.SplashActivity"
-            android:theme="@style/AppSplash">
+            android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".activity.MemberCenterActivity"/>
         <activity android:name=".activity.BaseActivity"/>
-        <activity android:name=".activity.MemberActivity"/>
         <activity android:name=".activity.LoginActivity">
         </activity>
         <activity android:name=".activity.RegisterActivity">

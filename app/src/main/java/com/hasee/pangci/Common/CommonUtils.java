@@ -1,4 +1,4 @@
-package com.hasee.pangci.Utils;
+package com.hasee.pangci.Common;
 
 import android.text.TextUtils;
 

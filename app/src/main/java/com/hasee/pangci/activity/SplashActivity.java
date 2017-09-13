@@ -39,7 +39,6 @@ public class SplashActivity extends AppCompatActivity {
         mAnimatorSet.playTogether(objectAnimatorX,objectAnimatorY);
         mAnimatorSet.setDuration(2000);
         addListener();
-
     }
 
     private void addListener() {

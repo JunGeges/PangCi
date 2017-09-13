@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.R;
-import com.hasee.pangci.Utils.MessageEvent;
+import com.hasee.pangci.Common.MessageEvent;
 import com.hasee.pangci.bean.User;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,7 +41,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog mProgressDialog;
     @BindView(R.id.login_tool_bar)
     Toolbar mToolbar;
-    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +86,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void checkIsExitUser() {
         //判断是否存在此用户
-        final String account = mAccountEditText.getText().toString();
-        final String password = mPassWordEditText.getText().toString();
+        String account = mAccountEditText.getText().toString();
+        String password = mPassWordEditText.getText().toString();
+
         BmobQuery<User> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("userAccount", account);
         bmobQuery.addWhereEqualTo("userPassword", password);
@@ -100,33 +100,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         //保存到sp 下次进来直接登录
                         SharedPreferences login_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
                         SharedPreferences.Editor edit = login_info.edit();
-                        for (int i = 0; i < list.size(); i++) {
+                        for (int i = 0; i < list.size(); i++) {//数据唯一 注册做了限制
                             User userTemp = list.get(i);
                             //查下来得区分是否是充值会员 充值会员有时间
-                            if (userTemp.getMemberLevel().equals("0")) {
-                                mUser = new User(userTemp.getUserAccount(), userTemp.getUserPassword(), userTemp.getUserHeadImg(), userTemp.getMemberLevel(), userTemp.getMemberStartDate(), userTemp.getMemberEndDate());
-
+                            if (userTemp.getMemberLevel().equals("青铜")) {
+                                //青铜会员
                                 //存进sp
-                                edit.putString("account", account);
-                                edit.putString("password", password);
-                                edit.putString("memberLevel", mUser.getMemberLevel());
+                                edit.putInt("headImg", userTemp.getUserHeadImg());
+                                edit.putString("account", userTemp.getUserAccount());
+                                edit.putString("password", userTemp.getUserPassword());
+                                edit.putString("memberLevel", userTemp.getMemberLevel());
+                                //存储登录状态
+                                edit.putBoolean("isLogin",true);
                                 edit.apply();
-                            }else {
-                                mUser.setUserAccount(userTemp.getUserAccount());
-                                mUser.setUserPassword(userTemp.getUserPassword());
-                                mUser.setMemberLevel(userTemp.getMemberLevel());
-                                mUser.setUserHeadImg(userTemp.getUserHeadImg());
-
+                            } else {
+                                //黄金 白金 钻石会员
                                 //存进sp
-                                edit.putString("account", account);
-                                edit.putString("password", password);
-                                edit.putString("memberLevel", mUser.getMemberLevel());
-                                edit.putString("memberStartDate", mUser.getMemberStartDate().getDate());
-                                edit.putString("memberEndDate", mUser.getMemberEndDate().getDate());
+                                edit.putInt("headImg", userTemp.getUserHeadImg());
+                                edit.putString("account", userTemp.getUserAccount());
+                                edit.putString("password", userTemp.getUserPassword());
+                                edit.putString("memberLevel", userTemp.getMemberLevel());
+                                edit.putString("memberStartDate", userTemp.getMemberStartDate().getDate());
+                                edit.putString("memberEndDate", userTemp.getMemberEndDate().getDate());
+                                //存储登录状态
+                                edit.putBoolean("isLogin",true);
                                 edit.apply();
                             }
-                            EventBus.getDefault().post(new MessageEvent(mUser));
+                            EventBus.getDefault().post(new MessageEvent(userTemp));
                         }
+                        finish();
                         //不显示不知道为啥？？？
  /*                       runOnUiThread(new Runnable() {
                             @Override
@@ -134,13 +136,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 initProgressDialog();
                             }
                         });*/
-                        finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "账号或密码输入错误!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Log.i("TAG", "error: " + e.getMessage());
-                    Toast.makeText(LoginActivity.this, "非法操作" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "非法操作,请重试" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

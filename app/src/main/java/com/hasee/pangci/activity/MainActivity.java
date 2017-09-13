@@ -20,9 +20,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hasee.pangci.Common.DataCleanManagerUtils;
+import com.hasee.pangci.Common.DateFormat;
+import com.hasee.pangci.Common.MessageEvent;
 import com.hasee.pangci.R;
-import com.hasee.pangci.Utils.DateFormat;
-import com.hasee.pangci.Utils.MessageEvent;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
 import com.hasee.pangci.bean.User;
 import com.hasee.pangci.fragment.MemberFragment;
@@ -33,10 +34,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     @BindView(R.id.main_tab_layout)
@@ -62,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView mNavigationAccountTv;
     private TextView mNavigationMemberLevelTv;
     private TextView mNavigationResidueTv;
+    private CircleImageView mHeadCIV;
+    private User mUserInfo = new User();//用户信息
+    private boolean isLogin;//判断用户是否登录
+    private SharedPreferences mLogin_info;
+    private String currentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EventBus.getDefault().register(this);
         initView();
         initData();
-        initEvent();
+        //获取当前时间 扣除会员天数
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        currentDate = simpleDateFormat.format(date);
         checkIsLogin();//判断之前是否登录，如果登录直接进
     }
 
@@ -108,28 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavigationMemberLevelTv = (TextView) headerView.findViewById(R.id.navigation_member_level_tv);//会员等级
         //会员剩余天数
         mNavigationResidueTv = (TextView) headerView.findViewById(R.id.navigation_residue_tv);
-    }
-
-    public void initEvent() {
-
-    }
-
-    private long tempTime;
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (System.currentTimeMillis() - tempTime > 2000) {
-                Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
-                tempTime = System.currentTimeMillis();
-                return false;
-            } else {
-                finish();
-                System.exit(0);
-                return true;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
+        mHeadCIV = (CircleImageView) headerView.findViewById(R.id.navigation_header_icon_civ);
     }
 
     @Override
@@ -137,37 +128,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.navigation_menu_item_about:
                 Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                item.setChecked(true);//高亮
                 break;
 
             case R.id.navigation_menu_item_cache:
-                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                item.setChecked(true);//高亮
+                try {
+                    DataCleanManagerUtils.clearAllCache(this);
+                    Toast.makeText(MainActivity.this, "清除成功!", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.navigation_menu_item_exit:
                 Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                 //清除sp内容退出
-                SharedPreferences login_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
-                login_info.edit().clear();
+                DataCleanManagerUtils.cleanSharedPreference(this);
+
                 mNavigationMemberInfoLl.setVisibility(View.GONE);//隐藏会员信息布局
                 mNavigationAccountTv.setText("点击登录");
-                item.setChecked(true);//高亮
+                mHeadCIV.setImageResource(R.drawable.normal_login);
+                isLogin = false;
                 break;
 
             case R.id.navigation_menu_item_flock:
                 Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                item.setChecked(true);//高亮
                 break;
 
             case R.id.navigation_menu_item_version:
                 Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                item.setChecked(true);//高亮
                 break;
 
             case R.id.navigation_menu_item_member:
-                item.setChecked(true);//高亮
-                Intent intent = new Intent(MainActivity.this, MemberActivity.class);
+                Intent intent = new Intent(MainActivity.this, MemberCenterActivity.class);
+                if (!isLogin) {
+                    //未登录
+                    intent.setFlags(0);//未登录
+                } else {
+                    intent.setFlags(1);//登录
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("user", mUserInfo);
+                    intent.putExtras(bundle);
+                }
                 startActivity(intent);
                 break;
         }
@@ -178,7 +179,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.navigation_account_tv:
-                Log.i("TAG", "onClick: " + mNavigationAccountTv.getText().toString());
                 if (mNavigationAccountTv.getText().toString().equals("点击登录")) {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -194,45 +194,87 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)//默认优先级为0
     public void handleEvent(MessageEvent event) {
         User user = event.getUser();
+        mUserInfo = user;
+        isLogin = mLogin_info.getBoolean("isLogin", false);
         mNavigationMemberInfoLl.setVisibility(View.VISIBLE);
-        if (user.getMemberLevel().equals("0")) {
+        if (user.getMemberLevel().equals("青铜")) {
             //普通会员
+            mHeadCIV.setImageResource(user.getUserHeadImg());
             mNavigationAccountTv.setText(user.getUserAccount());
             mNavigationMemberLevelTv.setText("会员等级:" + user.getMemberLevel());
             mNavigationResidueTv.setVisibility(View.GONE);
         } else {
             //充值会员
+            mHeadCIV.setImageResource(user.getUserHeadImg());
             mNavigationAccountTv.setText(user.getUserAccount());
-            mNavigationMemberLevelTv.setText("会员等级:" + event.getUser().getMemberLevel());
-            int residueDays = DateFormat.differentDaysByMillisecond(user.getMemberStartDate().getDate(), user.getMemberEndDate().getDate());
-            mNavigationResidueTv.setText(",会员剩余天数:" + residueDays + "天");
+            mNavigationMemberLevelTv.setText("会员等级:" + user.getMemberLevel());
+            mNavigationResidueTv.setVisibility(View.VISIBLE);
+            int residueDays = DateFormat.differentDaysByMillisecond(currentDate,user.getMemberEndDate().getDate());
+            mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
+            Log.i("TAGEventBus-",mLogin_info.getString("memberEndDate", "")+"--"+currentDate);
         }
     }
 
-
     private void checkIsLogin() {
-        SharedPreferences login_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
-        Log.i("TAG", "checkIsLogin: "+login_info.getString("memberLevel","0"));
-        if (!login_info.getString("account", "").equals("")) {
+        mLogin_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
+        isLogin = mLogin_info.getBoolean("isLogin", false);
+        if (!mLogin_info.getString("account", "").equals("")) {
             //说明里面有记录
             //判断会员等级
             mNavigationMemberInfoLl.setVisibility(View.VISIBLE);//显示布局会员信息布局
-            if (login_info.getString("memberLevel", "0").equals("0")) {
+            if (mLogin_info.getString("memberLevel", "青铜").equals("青铜")) {
                 //普通会员
-                mNavigationAccountTv.setText(login_info.getString("account", ""));
-                mNavigationMemberLevelTv.setText("会员等级:" + login_info.getString("memberLevel","0"));
+                mHeadCIV.setImageResource(mLogin_info.getInt("headImg", R.drawable.normal_login));
+                mNavigationAccountTv.setText(mLogin_info.getString("account", ""));
+                mNavigationMemberLevelTv.setText("会员等级:" + mLogin_info.getString("memberLevel", "青铜"));
                 mNavigationResidueTv.setVisibility(View.GONE);
-            }else {
+                mUserInfo.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
+                mUserInfo.setMemberLevel(mLogin_info.getString("memberLevel", "青铜"));
+                mUserInfo.setUserAccount(mLogin_info.getString("account", ""));
+            } else {
                 //充值会员
-                mNavigationAccountTv.setText(login_info.getString("account",""));
-                mNavigationMemberLevelTv.setText("会员等级:" + login_info.getString("memberLevel","0"));
-                int residueDays = DateFormat.differentDaysByMillisecond(login_info.getString("memberStartDate",""), login_info.getString("memberEndStartDate",""));
-                mNavigationResidueTv.setText(",会员剩余天数:" + residueDays + "天");
+                mHeadCIV.setImageResource(mLogin_info.getInt("headImg", R.drawable.normal_login));
+                mNavigationAccountTv.setText(mLogin_info.getString("account", ""));
+                mNavigationMemberLevelTv.setText("会员等级:" + mLogin_info.getString("memberLevel", "青铜"));
+                int residueDays = DateFormat.differentDaysByMillisecond(currentDate,mLogin_info.getString("memberEndDate", ""));
+                mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
+                mUserInfo.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
+                mUserInfo.setMemberLevel(mLogin_info.getString("memberLevel", "青铜"));
+                mUserInfo.setUserAccount(mLogin_info.getString("account", ""));
+                Log.i("TAG++--+++--",mLogin_info.getString("memberEndDate", "")+"--"+currentDate);
             }
         }
+    }
+
+    private long tempTime;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //先关闭侧滑
+            if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                mDrawerLayout.closeDrawers();
+                return false;
+            }
+            if (System.currentTimeMillis() - tempTime > 2000) {
+                Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+                tempTime = System.currentTimeMillis();
+                return false;
+            } else {
+                finish();
+                System.exit(0);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 

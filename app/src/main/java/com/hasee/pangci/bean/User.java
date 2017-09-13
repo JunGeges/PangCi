@@ -1,5 +1,8 @@
 package com.hasee.pangci.bean;
 
+
+import java.io.Serializable;
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobDate;
 
@@ -7,13 +10,13 @@ import cn.bmob.v3.datatype.BmobDate;
  * Created by Administrator on 2017/9/11.
  */
 
-public class User extends BmobObject {
+public class User extends BmobObject implements Serializable{
 
     private String userAccount;
 
     private String userPassword;
 
-    private String userHeadImg;
+    private Integer userHeadImg;
 
     private String memberLevel;
 
@@ -24,7 +27,7 @@ public class User extends BmobObject {
     public User() {
     }
 
-    public User(String userAccount, String userPassword,String userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate) {
+    public User(String userAccount, String userPassword,Integer userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate) {
         this.userAccount = userAccount;
         this.userPassword = userPassword;
         this.userHeadImg = userHeadImg;
@@ -49,11 +52,11 @@ public class User extends BmobObject {
         this.userPassword = userPassword;
     }
 
-    public String getUserHeadImg() {
+    public Integer getUserHeadImg() {
         return userHeadImg;
     }
 
-    public void setUserHeadImg(String userHeadImg) {
+    public void setUserHeadImg(Integer userHeadImg) {
         this.userHeadImg = userHeadImg;
     }
 

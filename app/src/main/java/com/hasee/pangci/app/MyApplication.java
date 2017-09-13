@@ -2,7 +2,7 @@ package com.hasee.pangci.app;
 
 import android.app.Application;
 
-import com.hasee.pangci.Utils.Constant;
+import com.hasee.pangci.Common.Constant;
 
 import cn.bmob.v3.Bmob;
 

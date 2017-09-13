@@ -1,4 +1,4 @@
-package com.hasee.pangci.Utils;
+package com.hasee.pangci.Common;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

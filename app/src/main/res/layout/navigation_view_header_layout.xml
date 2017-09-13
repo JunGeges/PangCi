@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="150dp"
-              xmlns:tools="http://schemas.android.com/tools"
               android:background="@color/colorPrimaryDark"
-              android:gravity="center"
+              android:gravity="center_vertical"
               android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -14,7 +14,8 @@
         android:layout_height="48dp"
         android:src="@drawable/normal_login"
         app:civ_border_color="@android:color/white"
-        app:civ_border_width="1dp" />
+        android:layout_marginLeft="20dp"
+        app:civ_border_width="1dp"/>
 
     <TextView
         android:id="@+id/navigation_account_tv"
@@ -23,34 +24,36 @@
         android:layout_marginTop="10dp"
         android:text="点击登录"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:layout_marginLeft="20dp"
+        android:textSize="16sp"/>
 
 
     <LinearLayout
         android:id="@+id/navigation_member_info_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
         android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/navigation_member_level_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="会员等级:普通,"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="14sp"
+            tools:text="会员等级:普通"/>
 
         <TextView
             android:id="@+id/navigation_residue_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="会员还剩20天"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="14sp"
+            android:layout_marginTop="5dp"
+            tools:text="会员还剩20天"/>
     </LinearLayout>
 
 

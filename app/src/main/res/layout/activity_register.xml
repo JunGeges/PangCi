@@ -80,8 +80,7 @@
                 android:background="@null"
                 android:hint="请输入账号"
                 android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textColorHint="#80303F9F"
+                android:textColorHint="#80FA7298"
                 />
 
         </LinearLayout>
@@ -90,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
-            android:background="#80303F9F"
+            android:background="#80FA7298"
             />
 
     </LinearLayout>
@@ -125,7 +124,7 @@
                 android:hint="请输入密码"
                 android:password="true"
                 android:singleLine="true"
-                android:textColorHint="#80303F9F"
+                android:textColorHint="#80FA7298"
                 />
 
         </LinearLayout>
@@ -134,7 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
-            android:background="#80303F9F"
+            android:background="#80FA7298"
             />
 
     </LinearLayout>
@@ -170,7 +169,7 @@
                 android:hint="请确认密码"
                 android:password="true"
                 android:singleLine="true"
-                android:textColorHint="#80303F9F"
+                android:textColorHint="#80FA7298"
                 />
 
         </LinearLayout>
@@ -179,7 +178,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
-            android:background="#80303F9F"
+            android:background="#80FA7298"
             />
 
     </LinearLayout>
@@ -195,6 +194,7 @@
         android:gravity="center"
         android:text="确认注册"
         android:textSize="18sp"
+        android:textColor="@android:color/white"
         />
 
 
