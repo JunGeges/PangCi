@@ -10,7 +10,7 @@ import cn.bmob.v3.datatype.BmobDate;
  * Created by Administrator on 2017/9/11.
  */
 
-public class User extends BmobObject implements Serializable{
+public class User extends BmobObject implements Serializable {
 
     private String userAccount;
 
@@ -24,16 +24,19 @@ public class User extends BmobObject implements Serializable{
 
     private BmobDate memberEndDate;
 
+    private String userIMEI;
+
     public User() {
     }
 
-    public User(String userAccount, String userPassword,Integer userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate) {
+    public User(String userAccount, String userPassword, Integer userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate, String userIMEI) {
         this.userAccount = userAccount;
         this.userPassword = userPassword;
         this.userHeadImg = userHeadImg;
         this.memberLevel = memberLevel;
         this.memberStartDate = memberStartDate;
         this.memberEndDate = memberEndDate;
+        this.userIMEI = userIMEI;
     }
 
     public String getUserAccount() {
@@ -84,6 +87,15 @@ public class User extends BmobObject implements Serializable{
         this.memberEndDate = memberEndDate;
     }
 
+
+    public String getUserIMEI() {
+        return userIMEI;
+    }
+
+    public void setUserIMEI(String userIMEI) {
+        this.userIMEI = userIMEI;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -93,6 +105,7 @@ public class User extends BmobObject implements Serializable{
                 ", memberLevel='" + memberLevel + '\'' +
                 ", memberStartDate=" + memberStartDate +
                 ", memberEndDate=" + memberEndDate +
+                ",userIMEI=" + userIMEI +
                 '}';
     }
 }

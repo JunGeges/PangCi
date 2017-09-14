@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private User mUserInfo = new User();//用户信息
     private boolean isLogin;//判断用户是否登录
     private SharedPreferences mLogin_info;
-    private String currentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +79,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EventBus.getDefault().register(this);
         initView();
         initData();
-        //获取当前时间 扣除会员天数
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        currentDate = simpleDateFormat.format(date);
         checkIsLogin();//判断之前是否登录，如果登录直接进
     }
 
@@ -217,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mNavigationAccountTv.setText(user.getUserAccount());
             mNavigationMemberLevelTv.setText("会员等级:" + user.getMemberLevel());
             mNavigationResidueTv.setVisibility(View.VISIBLE);
-            int residueDays = DateFormat.differentDaysByMillisecond(currentDate,user.getMemberEndDate().getDate());
+            int residueDays = DateFormat.differentDaysByMillisecond(getCurrentDate(), user.getMemberEndDate().getDate());
             mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
-            Log.i("TAGEventBus-",mLogin_info.getString("memberEndDate", "")+"--"+currentDate);
+            Log.i("TAGEventBus-", mLogin_info.getString("memberEndDate", "") + "--" + getCurrentDate());
         }
     }
 
@@ -244,14 +239,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mHeadCIV.setImageResource(mLogin_info.getInt("headImg", R.drawable.normal_login));
                 mNavigationAccountTv.setText(mLogin_info.getString("account", ""));
                 mNavigationMemberLevelTv.setText("会员等级:" + mLogin_info.getString("memberLevel", "青铜"));
-                int residueDays = DateFormat.differentDaysByMillisecond(currentDate,mLogin_info.getString("memberEndDate", ""));
+                int residueDays = DateFormat.differentDaysByMillisecond(getCurrentDate(), mLogin_info.getString("memberEndDate", ""));
                 mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
                 mUserInfo.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
                 mUserInfo.setMemberLevel(mLogin_info.getString("memberLevel", "青铜"));
                 mUserInfo.setUserAccount(mLogin_info.getString("account", ""));
-                Log.i("TAG++--+++--",mLogin_info.getString("memberEndDate", "")+"--"+currentDate);
+                Log.i("TAG++--+++--", mLogin_info.getString("memberEndDate", "") + "--" + getCurrentDate());
             }
         }
+    }
+
+    private String getCurrentDate() {
+        //获取当前时间 扣除会员天数
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(date);
     }
 
     private long tempTime;

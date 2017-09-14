@@ -1,17 +1,22 @@
 package com.hasee.pangci.activity;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hasee.pangci.R;
 import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.Common.MessageEvent;
+import com.hasee.pangci.R;
 import com.hasee.pangci.bean.User;
+import com.hasee.pangci.permission.PermissionListener;
+import com.hasee.pangci.permission.PermissionManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -38,6 +43,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     Toolbar mToolbar;
     int[] headIcons = {R.drawable.ic_avatar1, R.drawable.ic_avatar2, R.drawable.ic_avatar3, R.drawable.ic_avatar4, R.drawable.ic_avatar5
             , R.drawable.ic_avatar6, R.drawable.ic_avatar7, R.drawable.ic_avatar8, R.drawable.ic_avatar9, R.drawable.ic_avatar10, R.drawable.ic_avatar11};
+    private static final int REQUEST_CODE_READ_PHONE_STATE = 0;
+    private PermissionManager helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         }
                     } else {
                         Toast.makeText(RegisterActivity.this, "非法操作!", Toast.LENGTH_SHORT).show();
+                        Log.i("register", e.getMessage());
                     }
                 }
             });
@@ -96,6 +104,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user.setUserPassword(password);
         user.setMemberLevel("青铜");
         user.setUserHeadImg(headIcons[random.nextInt(12)]);//[0,12)之间
+        //动态申请权限
+        if (gradePermissionManager() == false) {
+            return;
+        }
+        user.setUserIMEI(CommonUtils.getPhoneImei(this));
         user.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
@@ -115,6 +128,46 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         switch (v.getId()) {
             case R.id.register_confirm_tv:
                 registerAccount();
+                break;
+        }
+    }
+
+    boolean temp;
+
+    //动态申请权限
+    public boolean gradePermissionManager() {
+
+        helper = PermissionManager.with(this)
+                .addRequestCode(REQUEST_CODE_READ_PHONE_STATE)
+                .permissions(Manifest.permission.READ_PHONE_STATE)
+                .setPermissionsListener(new PermissionListener() {
+                    @Override
+                    public void onGranted() {
+                        temp = true;
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        temp = false;
+                        Toast.makeText(RegisterActivity.this, "您已经拒绝,注册无法进行!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onShowRationale(String[] permissions) {
+                        helper.setIsPositive(true);
+                        Toast.makeText(RegisterActivity.this, "用户注册需要,请在设置中开启此权限!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .request();
+        return temp;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_READ_PHONE_STATE:
+                helper.onPermissionResult(permissions, grantResults);
                 break;
         }
     }

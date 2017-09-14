@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="158dp"
+        android:layout_height="200dp"
         android:layout_marginLeft="45dp"
         android:layout_marginRight="45dp"
         android:background="@drawable/shap"
@@ -61,36 +61,34 @@
             android:textSize="14dp"
             />
 
+        <TextView
+            android:id="@+id/tv_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="117dp"
+            android:gravity="left"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="3.充值成功后,请重新登录账号，获取会员权限"
+            android:textColor="#333333"
+            android:textSize="14dp"
+            />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="33dp"
             android:background="#eeeded"
             />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="36dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
+            android:gravity="center"
             >
-
-            <TextView
-                android:id="@+id/tv_cancle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="还是不明白"
-                android:textSize="16dp"
-                />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#eeeded"
-                />
 
             <TextView
                 android:id="@+id/tv_comfirm"

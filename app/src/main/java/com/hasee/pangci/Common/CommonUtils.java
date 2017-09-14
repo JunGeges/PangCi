@@ -1,5 +1,7 @@
 package com.hasee.pangci.Common;
 
+import android.content.Context;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 /**
@@ -15,5 +17,11 @@ public class CommonUtils {
             }
         }
         return false;
+    }
+
+    //获取设备的唯一标识码IMEI
+    public static String getPhoneImei(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        return telephonyManager.getDeviceId();
     }
 }

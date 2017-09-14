@@ -1,9 +1,11 @@
 package com.hasee.pangci.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,9 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hasee.pangci.R;
+import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.Common.MessageEvent;
+import com.hasee.pangci.R;
 import com.hasee.pangci.bean.User;
+import com.hasee.pangci.permission.PermissionListener;
+import com.hasee.pangci.permission.PermissionManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,6 +46,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog mProgressDialog;
     @BindView(R.id.login_tool_bar)
     Toolbar mToolbar;
+    private static final int REQUEST_CODE_READ_PHONE_STATE = 0;
+    private PermissionManager helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,37 +104,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void done(List<User> list, BmobException e) {
                 if (e == null) {
                     if (list.size() != 0) {
+                        User userTemp = list.get(0);//数据唯一 注册做了限制
+                        //判断账号是否在本机登录
+                        if (gradePermissionManager() == false) return;
+                        if (!userTemp.getUserIMEI().equals(CommonUtils.getPhoneImei(LoginActivity.this))) {
+                            Toast.makeText(LoginActivity.this, "账号不能在本机登录!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         //保存到sp 下次进来直接登录
                         SharedPreferences login_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
                         SharedPreferences.Editor edit = login_info.edit();
-                        for (int i = 0; i < list.size(); i++) {//数据唯一 注册做了限制
-                            User userTemp = list.get(i);
-                            //查下来得区分是否是充值会员 充值会员有时间
-                            if (userTemp.getMemberLevel().equals("青铜")) {
-                                //青铜会员
-                                //存进sp
-                                edit.putInt("headImg", userTemp.getUserHeadImg());
-                                edit.putString("account", userTemp.getUserAccount());
-                                edit.putString("password", userTemp.getUserPassword());
-                                edit.putString("memberLevel", userTemp.getMemberLevel());
-                                //存储登录状态
-                                edit.putBoolean("isLogin",true);
-                                edit.apply();
-                            } else {
-                                //黄金 白金 钻石会员
-                                //存进sp
-                                edit.putInt("headImg", userTemp.getUserHeadImg());
-                                edit.putString("account", userTemp.getUserAccount());
-                                edit.putString("password", userTemp.getUserPassword());
-                                edit.putString("memberLevel", userTemp.getMemberLevel());
-                                edit.putString("memberStartDate", userTemp.getMemberStartDate().getDate());
-                                edit.putString("memberEndDate", userTemp.getMemberEndDate().getDate());
-                                //存储登录状态
-                                edit.putBoolean("isLogin",true);
-                                edit.apply();
-                            }
-                            EventBus.getDefault().post(new MessageEvent(userTemp));
+                        //查下来得区分是否是充值会员 充值会员有时间
+                        if (userTemp.getMemberLevel().equals("青铜")) {
+                            //青铜会员
+                            //存进sp
+                            edit.putInt("headImg", userTemp.getUserHeadImg());
+                            edit.putString("account", userTemp.getUserAccount());
+                            edit.putString("password", userTemp.getUserPassword());
+                            edit.putString("memberLevel", userTemp.getMemberLevel());
+                            //存储登录状态
+                            edit.putBoolean("isLogin", true);
+                            edit.apply();
+                        } else {
+                            //黄金 白金 钻石会员
+                            //存进sp
+                            edit.putInt("headImg", userTemp.getUserHeadImg());
+                            edit.putString("account", userTemp.getUserAccount());
+                            edit.putString("password", userTemp.getUserPassword());
+                            edit.putString("memberLevel", userTemp.getMemberLevel());
+                            edit.putString("memberStartDate", userTemp.getMemberStartDate().getDate());
+                            edit.putString("memberEndDate", userTemp.getMemberEndDate().getDate());
+                            //存储登录状态
+                            edit.putBoolean("isLogin", true);
+                            edit.apply();
                         }
+                        Toast.makeText(LoginActivity.this, "登录成功!", Toast.LENGTH_SHORT).show();
+                        EventBus.getDefault().post(new MessageEvent(userTemp));
                         finish();
                         //不显示不知道为啥？？？
  /*                       runOnUiThread(new Runnable() {
@@ -167,6 +179,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mProgressDialog.setMessage("正在登录...");
         }
         mProgressDialog.show();
+    }
+
+    boolean temp;
+
+    //动态申请权限
+    public boolean gradePermissionManager() {
+
+        helper = PermissionManager.with(this)
+                .addRequestCode(REQUEST_CODE_READ_PHONE_STATE)
+                .permissions(Manifest.permission.READ_PHONE_STATE)
+                .setPermissionsListener(new PermissionListener() {
+                    @Override
+                    public void onGranted() {
+                        temp = true;
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        temp = false;
+                        Toast.makeText(LoginActivity.this, "您已经拒绝,无法完成登录!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onShowRationale(String[] permissions) {
+                        helper.setIsPositive(true);
+                        Toast.makeText(LoginActivity.this, "用户登录需要,请在设置中开启此权限!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .request();
+        return temp;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_READ_PHONE_STATE:
+                helper.onPermissionResult(permissions, grantResults);
+                break;
+        }
     }
 
     @Override

@@ -13,4 +13,12 @@ public class Constant {
     public static final String SECRET="69295fd4c4937103";
 
     public static final String MASTERKEY="73af0d13c31e3c8e2e9930ace19d235b";
+
+    public static final String ICONHEADERURL="http://api2.36cj.com/?vid=";
+
+    //1  类 电影视频图片地址请求头
+    public static final String MOVIEONEHEADERURL="https://bobo.kkpp.space/share/";
+
+    //0 类 电影视频图片地址请求头
+    public static final String MOVIEZEROHEADERURL="http://api2.36cj.com/?vid=";
 }

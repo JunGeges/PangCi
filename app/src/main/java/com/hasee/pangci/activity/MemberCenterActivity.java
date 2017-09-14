@@ -4,17 +4,22 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hasee.pangci.R;
 import com.hasee.pangci.bean.User;
 
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,6 +37,8 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
     TextView mMemberLevelTv;
     @BindView(R.id.iv_user_icon)
     CircleImageView mHeadIcon;
+    @BindViews({R.id.member_center_v1_cv, R.id.member_center_v2_cv, R.id.member_center_v3_cv, R.id.member_center_v4_cv})
+    List<CardView> mCardViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,10 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_member_center);
         ButterKnife.bind(this);
         getIntentData();
+        initEvents();
+    }
+
+    private void initEvents() {
         llWeixin.setOnClickListener(this);
         llZhifubao.setOnClickListener(this);
 
@@ -50,6 +61,10 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
                 finish();
             }
         });
+
+        for (CardView cardView:mCardViews) {
+            cardView.setOnClickListener(this);
+        }
     }
 
     private void getIntentData() {
@@ -68,7 +83,7 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void showDialog(String tv1, String tv2) {
+    private void showDialog(String tv1, String tv2, String tv3) {
 
         final AlertDialog hintDialog = new AlertDialog.Builder(MemberCenterActivity.this, R.style.ShowDialog).create();
         View inflate_dialog = LayoutInflater.from(MemberCenterActivity.this).inflate(R.layout.pay_dialog_hint, null);
@@ -77,16 +92,11 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
 
         TextView tv_1 = (TextView) inflate_dialog.findViewById(R.id.tv_1);
         TextView tv_2 = (TextView) inflate_dialog.findViewById(R.id.tv_2);
+        TextView tv_3 = (TextView) inflate_dialog.findViewById(R.id.tv_3);
         tv_1.setText(tv1);
         tv_2.setText(tv2);
-        TextView tvCancel = (TextView) inflate_dialog.findViewById(R.id.tv_cancle);
+        tv_3.setText(tv3);
         TextView tvConfirm = (TextView) inflate_dialog.findViewById(R.id.tv_comfirm);
-        tvCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hintDialog.dismiss();
-            }
-        });
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,11 +110,27 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_weixin:
-                showDialog("1.请关注微信公众号\"壹号电影", "2.点击该公众号菜单栏“胖次有你”找到充值一栏即可开通");
+                showDialog("1.请关注微信公众号“壹号电影", "2.点击该公众号菜单栏“胖次有你”找到充值一栏即可开通", "3.充值成功后,请重新登录账号，获取会员权限");
+                break;
+            //15386492280
+            case R.id.ll_zhifubao:
+                showDialog("1.付款账号:15386492280", "2.转账支付请务必留言应用账号，收到后我们将在第一时间内为留言账号开通会员", "3.充值成功后,请重新登录账号，获取会员权限");
                 break;
 
-            case R.id.ll_zhifubao:
-                showDialog("1.复制收款支付宝账号:15386492280", "2.转账支付请务必留言账号，收到后我们将在24小时内为留言账号开通会员");
+            case R.id.member_center_v1_cv:
+                Toast.makeText(this, "请选择下面的充值方式进行开通或续费!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.member_center_v2_cv:
+                Toast.makeText(this, "请选择下面的充值方式进行开通或续费!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.member_center_v3_cv:
+                Toast.makeText(this, "请选择下面的充值方式进行开通或续费!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.member_center_v4_cv:
+                Toast.makeText(this, "请选择下面的充值方式进行开通或续费!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
