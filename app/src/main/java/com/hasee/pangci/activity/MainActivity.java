@@ -122,13 +122,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_menu_item_about:
-                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "顶着一切为了满足用户需求的目的,致力于打造最齐全,最完善的资源平台,感谢您的支持!", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.navigation_menu_item_cache:
                 try {
                     DataCleanManagerUtils.clearAllCache(this);
-                    Toast.makeText(MainActivity.this, "清除成功!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "缓存清除成功!", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -143,14 +143,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mNavigationAccountTv.setText("点击登录");
                 mHeadCIV.setImageResource(R.drawable.normal_login);
                 isLogin = false;
+                if (mLogin_info != null) {//注销--》更新登录状态
+                    SharedPreferences.Editor edit = mLogin_info.edit();
+                    edit.putBoolean("isLogin", false);
+                    edit.apply();
+                }
                 break;
 
             case R.id.navigation_menu_item_flock:
-                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                if (mLogin_info != null&&mLogin_info.getBoolean("isLogin",false)){
+                    if (mLogin_info.getString("memberLevel","青铜").equals("钻石")) {
+                        Toast.makeText(MainActivity.this, "尊贵的会员,请在微信公众后台联系管理员!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(this, "钻石会员才能加入云群!", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
 
             case R.id.navigation_menu_item_version:
-                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "当前版本是最新的!", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.navigation_menu_item_member:
@@ -244,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mUserInfo.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
                 mUserInfo.setMemberLevel(mLogin_info.getString("memberLevel", "青铜"));
                 mUserInfo.setUserAccount(mLogin_info.getString("account", ""));
-                Log.i("TAG++--+++--", mLogin_info.getString("memberEndDate", "") + "--" + getCurrentDate());
             }
         }
     }

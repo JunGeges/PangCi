@@ -19,6 +19,9 @@ public class Constant {
     //1  类 电影视频图片地址请求头
     public static final String MOVIEONEHEADERURL="https://bobo.kkpp.space/share/";
 
-    //0 类 电影视频图片地址请求头
+    //0 类 电影视频地址请求头
     public static final String MOVIEZEROHEADERURL="http://api2.36cj.com/?vid=";
+
+    //0 类 电影图片地址请求头
+    public static final String ICONZEROHEADERURL="http://api2.36cj.com/apitu.php?vid=";
 }

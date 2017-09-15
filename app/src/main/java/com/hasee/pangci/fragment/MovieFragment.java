@@ -2,6 +2,7 @@ package com.hasee.pangci.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,28 +24,36 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
-/**
- * Created by 高俊 on 2017/9/9.
- */
-
-public class MovieFragment extends BaseFragment {
+public class MovieFragment extends Fragment {
+    private static final String TAG = "MovieFragment";
     @BindView(R.id.rl_video_list)
     RecyclerView rlVideoList;
     private ArrayList<Resources> mResourcesArrayList = new ArrayList<>();
     private static final String RESOURCETYPE = "video";
+    private View mView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.movie_fragment_layout, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        if (mView != null) {
+            ViewGroup parent = (ViewGroup) mView.getParent();
+            if (parent != null) {
+                parent.removeView(mView);
+            }
+            ButterKnife.bind(this, mView);
+            return mView;
+        }
+        mView = inflater.inflate(R.layout.movie_fragment_layout, container, false);
+        ButterKnife.bind(this, mView);
+        return mView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-            //查询电影类的资源
+        Log.i(TAG, "onActivityCreated----");
+        //查询电影类的资源
+        if (mResourcesArrayList.size() == 0) {
             BmobQuery<Resources> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("ContentType", RESOURCETYPE);
             bmobQuery.findObjects(new FindListener<Resources>() {
@@ -56,14 +65,14 @@ public class MovieFragment extends BaseFragment {
                             Log.i("TAGS//////***", list.get(i).toString());
                             mResourcesArrayList.add(resources);
                         }
+                        CommonAdapter adapter = new CommonAdapter(mResourcesArrayList, getActivity());
+                        rlVideoList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        rlVideoList.setAdapter(adapter);
                     } else {
                         Toast.makeText(getActivity(), "非法操作,请重试!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-
-            CommonAdapter adapter = new CommonAdapter(mResourcesArrayList, getActivity());
-            rlVideoList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            rlVideoList.setAdapter(adapter);
         }
+    }
 }

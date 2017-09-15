@@ -6,7 +6,7 @@ import cn.bmob.v3.BmobObject;
  * Created by Administrator on 2017/9/14.
  */
 
-public class Resources extends BmobObject{
+public class Resources extends BmobObject {
 
     /***
      * 资源标题
@@ -14,14 +14,14 @@ public class Resources extends BmobObject{
     private String Title;
 
     /***
-     * 资源请求头类别
+     * 视频内容资源请求头类别
      */
     private String httpstype;
 
     /***
-     * 资源封面请求id
+     * 视频封面图片请求类别
      */
-    private String CoverId;
+    private String coverhttptype;
 
     /***
      *资源类型
@@ -39,18 +39,24 @@ public class Resources extends BmobObject{
     private String ContentId;
 
     /***
+     * 资源封面id
+     */
+    private String Cover;
+
+    /***
      * 资源免费还是收费
      */
     private String Authority;
 
-    public Resources(String title, String httpstype, String coverId, String contentType, String contentLike, String contentId, String authority) {
+    public Resources(String title, String httpstype, String coverhttptype, String contentType, String contentLike, String contentId, String authority, String cover) {
         Title = title;
         this.httpstype = httpstype;
-        CoverId = coverId;
+        this.coverhttptype = coverhttptype;
         ContentType = contentType;
         ContentLike = contentLike;
         ContentId = contentId;
         Authority = authority;
+        Cover = cover;
     }
 
     public String getTitle() {
@@ -67,14 +73,6 @@ public class Resources extends BmobObject{
 
     public void setHttpstype(String httpstype) {
         this.httpstype = httpstype;
-    }
-
-    public String getCoverId() {
-        return CoverId;
-    }
-
-    public void setCoverId(String coverId) {
-        CoverId = coverId;
     }
 
     public String getContentType() {
@@ -109,16 +107,33 @@ public class Resources extends BmobObject{
         Authority = authority;
     }
 
+    public String getCoverhttptype() {
+        return coverhttptype;
+    }
+
+    public void setCoverhttptype(String coverhttptype) {
+        this.coverhttptype = coverhttptype;
+    }
+
+    public String getCover() {
+        return Cover;
+    }
+
+    public void setCover(String cover) {
+        Cover = cover;
+    }
+
     @Override
     public String toString() {
         return "Resources{" +
                 "Title='" + Title + '\'' +
                 ", httpstype='" + httpstype + '\'' +
-                ", CoverId='" + CoverId + '\'' +
+                ", coverhttptype='" + coverhttptype + '\'' +
                 ", ContentType='" + ContentType + '\'' +
                 ", ContentLike='" + ContentLike + '\'' +
                 ", ContentId='" + ContentId + '\'' +
                 ", Authority='" + Authority + '\'' +
+                ",cover='"+Cover+'\''+
                 '}';
     }
 }

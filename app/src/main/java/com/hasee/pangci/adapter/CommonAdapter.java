@@ -3,9 +3,9 @@ package com.hasee.pangci.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +16,20 @@ import com.bumptech.glide.Glide;
 import com.hasee.pangci.Common.Constant;
 import com.hasee.pangci.R;
 import com.hasee.pangci.bean.Resources;
+import com.hasee.pangci.interfaces.RecyclerItemOnClickListener;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * @date:2017/9/10
- * @author: 廖呈彪
- * @description:
- */
+import static android.content.Context.MODE_PRIVATE;
 
 public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder> {
-
     private ArrayList<Resources> mResourcesArrayList;
     private Context context;
+    private String videoUrl;//视频地址
+    private RecyclerItemOnClickListener mRecyclerItemOnClickListener;
 
     public CommonAdapter(ArrayList<Resources> vlist, Context context) {
         this.mResourcesArrayList = vlist;
@@ -45,26 +43,31 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
         return holder;
     }
 
-    private String videoUrl;
-
     @Override
-    public void onBindViewHolder(viewHolder holder, int position) {
-        Resources resources = mResourcesArrayList.get(position);
+    public void onBindViewHolder(viewHolder holder, final int position) {
+        final Resources resources = mResourcesArrayList.get(position);
         holder.tvLookNum.setText(resources.getContentLike());
         holder.tvTitle.setText(resources.getTitle());
         holder.updateTime.setText(resources.getCreatedAt());
-        //根据httpsType区别请求头
+        //根据httpsType区别视频请求头
         switch (resources.getHttpstype()) {
             case "0":
-                //封面地址
-                Glide.with(context).load(Constant.MOVIEZEROHEADERURL + resources.getCoverId()).error(R.drawable.icon_load_error).into(holder.ivCover);
                 //视频地址
                 videoUrl = Constant.MOVIEZEROHEADERURL + resources.getContentId();
-                Log.i("TAG+++++++", videoUrl);
                 break;
             case "1":
-                Glide.with(context).load(Constant.MOVIEONEHEADERURL + resources.getCoverId()).error(R.drawable.icon_load_error).into(holder.ivCover);
                 videoUrl = Constant.MOVIEONEHEADERURL + resources.getContentId();
+                break;
+        }
+        //根据coverhttptype区分图片请求头
+        switch (resources.getCoverhttptype()) {
+            case "0":
+                //封面地址
+                Glide.with(context).load(Constant.ICONZEROHEADERURL + resources.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
+                break;
+
+            case "1":
+                Glide.with(context).load(resources.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
                 break;
         }
 
@@ -72,33 +75,56 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
         holder.ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog hintDialog = new AlertDialog.Builder(context, R.style.ShowDialog).create();
-                View inflate_dialog = LayoutInflater.from(context).inflate(R.layout.play_dialog_hint, null);
-                hintDialog.show();
-                hintDialog.setContentView(inflate_dialog);
-                TextView tvCancel = (TextView) inflate_dialog.findViewById(R.id.tv_cancle);
-                TextView tvConfirm = (TextView) inflate_dialog.findViewById(R.id.tv_comfirm);
-                tvCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        hintDialog.dismiss();
+                SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
+                String mMemberLevel = login_info.getString("memberLevel", "青铜");
+                boolean isLogin = login_info.getBoolean("isLogin", false);
+                //判断是否已经登录
+                if (!isLogin) {
+                    buildDialog("请登录之后观看!");
+                    return;
+                }
+                //判断是否是免费还是收费
+                if (resources.getAuthority().equals("common")) {
+                    //免费直接看
+                    openVideo(videoUrl);
+                } else {
+                    //1.收费
+                    //2.看是否是付费会员
+                    if (mMemberLevel.equals("青铜")) {
+                        //没付费会员提示开通会员
+                        buildDialog("请先升级更高级会员观看!");
+                    } else {
+                        //付费会员直接看
+                        openVideo(videoUrl);
                     }
-                });
-                tvConfirm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        hintDialog.dismiss();
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        Uri content_url = Uri.parse(videoUrl);
-                        intent.setData(content_url);
-                        context.startActivity(intent);
-                    }
-                });
-
+                }
             }
         });
 
+    }
+
+    private void buildDialog(String promptContent) {
+        final AlertDialog hintDialog = new AlertDialog.Builder(context, R.style.ShowDialog).create();
+        View inflate_dialog = LayoutInflater.from(context).inflate(R.layout.play_dialog_hint, null);
+        hintDialog.show();
+        hintDialog.setContentView(inflate_dialog);
+        TextView tvContent = (TextView) inflate_dialog.findViewById(R.id.tv_content);
+        tvContent.setText(promptContent);
+        TextView tvConfirm = (TextView) inflate_dialog.findViewById(R.id.tv_comfirm);
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hintDialog.dismiss();
+            }
+        });
+    }
+
+    private void openVideo(String videoUrl) {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri content_url = Uri.parse(videoUrl);
+        intent.setData(content_url);
+        context.startActivity(intent);
     }
 
     @Override
@@ -122,5 +148,9 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void setRecyclerItemOnClickListener(RecyclerItemOnClickListener itemOnClickListener) {
+        mRecyclerItemOnClickListener = itemOnClickListener;
     }
 }
