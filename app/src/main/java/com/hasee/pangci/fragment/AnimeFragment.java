@@ -25,13 +25,12 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 
-public class MemberFragment extends Fragment {
-    private static final String TAG = "MemberFragment";
+public class AnimeFragment extends Fragment {
+    private View mView;
     @BindView(R.id.rl_video_list)
     RecyclerView rlVideoList;
     private ArrayList<Resources> mResourcesBeanArrayList = new ArrayList<>();
-    private static final String RESOURCETYPE = "vip";
-    private View mView;
+    private static final String RESOURCETYPE = "anime";
 
     @Nullable
     @Override
@@ -41,7 +40,7 @@ public class MemberFragment extends Fragment {
             if (parent != null) {
                 parent.removeView(mView);
             }
-            ButterKnife.bind(this,mView);
+            ButterKnife.bind(this, mView);
             return mView;
         }
         mView = inflater.inflate(R.layout.member_fragment_layout, container, false);
@@ -52,7 +51,7 @@ public class MemberFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //查询vip类的资源
+        //查询Anime类的资源
         if (mResourcesBeanArrayList.size() == 0) {
             BmobQuery<Resources> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("ContentType", RESOURCETYPE);
@@ -69,7 +68,7 @@ public class MemberFragment extends Fragment {
                         rlVideoList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                         rlVideoList.setAdapter(adapter);
                     } else {
-                        Toast.makeText(getActivity(), "非法操作,请重试!"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "非法操作,请重试!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

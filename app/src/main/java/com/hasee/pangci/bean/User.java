@@ -26,18 +26,9 @@ public class User extends BmobObject implements Serializable {
 
     private String userIMEI;
 
-    public User() {
-    }
+    private String userIntegral;//积分
 
-    public User(String userAccount, String userPassword, Integer userHeadImg, String memberLevel, BmobDate memberStartDate, BmobDate memberEndDate, String userIMEI) {
-        this.userAccount = userAccount;
-        this.userPassword = userPassword;
-        this.userHeadImg = userHeadImg;
-        this.memberLevel = memberLevel;
-        this.memberStartDate = memberStartDate;
-        this.memberEndDate = memberEndDate;
-        this.userIMEI = userIMEI;
-    }
+    private String inviter;//邀请人账号
 
     public String getUserAccount() {
         return userAccount;
@@ -96,6 +87,22 @@ public class User extends BmobObject implements Serializable {
         this.userIMEI = userIMEI;
     }
 
+    public String getUserIntegral() {
+        return userIntegral;
+    }
+
+    public void setUserIntegral(String userIntegral) {
+        this.userIntegral = userIntegral;
+    }
+
+    public String getInviter() {
+        return inviter;
+    }
+
+    public void setInviter(String inviter) {
+        this.inviter = inviter;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -106,6 +113,8 @@ public class User extends BmobObject implements Serializable {
                 ", memberStartDate=" + memberStartDate +
                 ", memberEndDate=" + memberEndDate +
                 ",userIMEI=" + userIMEI +
+                ",userIntegral="+userIntegral+
+                ",inviter="+inviter+
                 '}';
     }
 }

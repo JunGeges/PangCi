@@ -1,6 +1,7 @@
 package com.hasee.pangci.Common;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 
 import java.io.File;
@@ -121,9 +122,16 @@ public class DataCleanManagerUtils {
      * * 清除本应用SharedPreference(/data/data/com.xxx.xxx/shared_prefs) * * @param
      * context
      */
-    public static void cleanSharedPreference(Context context) {
+/*    public static void cleanSharedPreference(Context context) {
         deleteFilesByDirectory(new File("/data/data/"
                 + context.getPackageName() + "/shared_prefs"));
+    }*/
+
+    public static void cleanSharedPreference(Context context){
+        SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = login_info.edit();
+        edit.clear();
+        edit.commit();
     }
 
     /** * 按名字清除本应用数据库 * * @param context * @param dbName */

@@ -61,13 +61,12 @@
         </FrameLayout>
 
         <android.support.design.widget.FloatingActionButton
-            app:rippleColor="#80FA7298"
-            app:backgroundTint="#80FA7298"
             android:id="@+id/main_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
+            android:background="@drawable/fab"
             android:src="@drawable/open_slid_menu"/>
 
     </android.support.design.widget.CoordinatorLayout>

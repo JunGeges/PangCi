@@ -69,7 +69,6 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
 
     private void getIntentData() {
         Intent intent = getIntent();
-        Log.i("intentData", intent.getFlags() + "");
         if (intent.getFlags() == 1) {
             Bundle bundle = intent.getExtras();
             User user = (User) bundle.getSerializable("user");

@@ -15,13 +15,20 @@ public class Constant {
     public static final String MASTERKEY="73af0d13c31e3c8e2e9930ace19d235b";
 
     public static final String ICONHEADERURL="http://api2.36cj.com/?vid=";
-
-    //1  类 电影视频图片地址请求头
+    //httptype
+    //1  类 电影视频地址请求头
     public static final String MOVIEONEHEADERURL="https://bobo.kkpp.space/share/";
 
     //0 类 电影视频地址请求头
     public static final String MOVIEZEROHEADERURL="http://api2.36cj.com/?vid=";
 
-    //0 类 电影图片地址请求头
+    //2 类 电影视频地址请求头 //// TODO: 2017/9/16 待修改动漫的请求头
+    public static final String MOVIETWOHEADERURL="http://api2.36cj.com/?vid=";
+
+
+    //coverhttptype
+    //0 类 电影图片地址请求头 带请求头
     public static final String ICONZEROHEADERURL="http://api2.36cj.com/apitu.php?vid=";
+
+    //1 类 电影图片是完整的请求头 不带请求头
 }

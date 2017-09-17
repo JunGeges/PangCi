@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -29,12 +30,15 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.register_account_et)
     EditText mAccountEditText;
     @BindView(R.id.register_password_et)
     EditText mPasswordEditText;
+    @BindView(R.id.register_inviter_et)
+    EditText mInviterEditText;
     @BindView(R.id.register_password_again_et)
     EditText mPasswordAgainEt;
     @BindView(R.id.register_confirm_tv)
@@ -64,14 +68,33 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void registerAccount() {
         final String account = mAccountEditText.getText().toString().trim();
         final String password = mPasswordEditText.getText().toString().trim();
+        final String inviter = mInviterEditText.getText().toString().trim();
         String againPwd = mPasswordAgainEt.getText().toString().trim();
 
         if (CommonUtils.checkStrIsNull(account, password, againPwd)) {
             Toast.makeText(this, "选项不能为空!", Toast.LENGTH_SHORT).show();
+            return;
         } else if (account.length() < 6 || password.length() < 6) {
             Toast.makeText(this, "长度不得小于6!", Toast.LENGTH_SHORT).show();
+            return;
         } else if (!password.equals(againPwd)) {
             Toast.makeText(this, "密码输入不一致!", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (!TextUtils.isEmpty(inviter)) {
+            //邀请人项不为空 确定邀请人是否存在
+            BmobQuery<User> bmobQuery = new BmobQuery<>();
+            bmobQuery.addWhereEqualTo("userAccount", inviter);
+            bmobQuery.findObjects(new FindListener<User>() {
+                @Override
+                public void done(List<User> list, BmobException e) {
+                    if (e == null) {
+                        if (list.size() == 0) {
+                            Toast.makeText(RegisterActivity.this, "邀请人不存在!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+            return;
         } else {
             BmobQuery<User> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("userAccount", account);
@@ -83,10 +106,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Toast.makeText(RegisterActivity.this, "账号已存在!", Toast.LENGTH_SHORT).show();
                             return;
                         } else {
-                            insertDataToServer(account, password);
+                            //账号不存在
+                            //邀请人存在 给邀请人加积分
+                            if (!TextUtils.isEmpty(inviter)) {
+                                updateAndQueryDb(inviter);
+                            }
+                            insertDataToServer(account, password, inviter);
                         }
                     } else {
-                        Toast.makeText(RegisterActivity.this, "非法操作!", Toast.LENGTH_SHORT).show();
                         Log.i("register", e.getMessage());
                     }
                 }
@@ -96,13 +123,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void insertDataToServer(String account, String password) {
+    private void insertDataToServer(String account, String password, String inivter) {
         //给用户随机分配头像
         Random random = new Random();
         final User user = new User();
         user.setUserAccount(account);
         user.setUserPassword(password);
         user.setMemberLevel("青铜");
+        user.setInviter(inivter);//邀请人 可为空
+        user.setUserIntegral("20");//首次注册送积分20
         user.setUserHeadImg(headIcons[random.nextInt(12)]);//[0,12)之间
         //动态申请权限
         if (gradePermissionManager() == false) {
@@ -113,11 +142,44 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
+                    EventBus.getDefault().post(new MessageEvent(user, "register"));
                     Toast.makeText(RegisterActivity.this, "注册成功!", Toast.LENGTH_SHORT).show();
-                    EventBus.getDefault().post(new MessageEvent(user));
                     finish();
                 } else {
-                    Toast.makeText(RegisterActivity.this, "注册失败!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "注册失败,请重试!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void updateAndQueryDb(String userName) {
+        //由于只能根据id去修改,先根据账号查 再修改
+        BmobQuery<User> bmobQuery = new BmobQuery<>();
+        bmobQuery.addWhereEqualTo("userAccount", userName);
+        bmobQuery.findObjects(new FindListener<User>() {
+            @Override
+            public void done(List<User> list, BmobException e) {
+                if (e == null) {
+                    User user = list.get(0);
+                    updateDb(user.getObjectId(), user.getUserIntegral());
+                } else {
+
+                }
+            }
+        });
+    }
+
+    //给邀请人添加积分
+    private void updateDb(String objectId, String oldIntegral) {
+        int oIntergral = Integer.parseInt(oldIntegral);
+        User user = new User();
+        final String tempIntegral = String.valueOf(oIntergral + 20);
+        user.setUserIntegral(tempIntegral + "");
+        user.update(objectId, new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+
                 }
             }
         });

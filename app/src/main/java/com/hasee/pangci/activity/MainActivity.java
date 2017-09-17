@@ -12,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -26,6 +25,7 @@ import com.hasee.pangci.Common.MessageEvent;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
 import com.hasee.pangci.bean.User;
+import com.hasee.pangci.fragment.AnimeFragment;
 import com.hasee.pangci.fragment.MemberFragment;
 import com.hasee.pangci.fragment.MovieFragment;
 import com.hasee.pangci.fragment.RecommendFragment;
@@ -59,8 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MemberFragment memberFragment = new MemberFragment();
     private RecommendFragment recommendFragment = new RecommendFragment();
     private MovieFragment movieFragment = new MovieFragment();
-    private String[] tabTitles = {"推荐", "影视", "VIP专区"};
-    private Fragment[] fragments = {recommendFragment, movieFragment, memberFragment};
+    private AnimeFragment animeFragment = new AnimeFragment();
+    private String[] tabTitles = {"推荐", "影视", "腐漫", "VIP专区"};
+    private Fragment[] fragments = {recommendFragment, movieFragment, animeFragment, memberFragment};
     private ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
     private View mNavigationMemberInfoLl;
     private TextView mNavigationAccountTv;
@@ -121,8 +122,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.navigation_menu_item_about:
-                Toast.makeText(MainActivity.this, "顶着一切为了满足用户需求的目的,致力于打造最齐全,最完善的资源平台,感谢您的支持!", Toast.LENGTH_SHORT).show();
+            case R.id.navigation_menu_item_info:
+                if (mLogin_info != null) {
+                    boolean isLogin = mLogin_info.getBoolean("isLogin", false);
+                    if (isLogin) {
+                        Intent intents = new Intent(MainActivity.this, NotificationActivity.class);
+                        startActivity(intents);
+                    } else {
+                        Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
 
             case R.id.navigation_menu_item_cache:
@@ -151,17 +160,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.navigation_menu_item_flock:
-                if (mLogin_info != null&&mLogin_info.getBoolean("isLogin",false)){
-                    if (mLogin_info.getString("memberLevel","青铜").equals("钻石")) {
-                        Toast.makeText(MainActivity.this, "尊贵的会员,请在微信公众后台联系管理员!", Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(this, "钻石会员才能加入云群!", Toast.LENGTH_SHORT).show();
+                if (mLogin_info != null && mLogin_info.getBoolean("isLogin", false)) {
+                    if (mLogin_info.getString("memberLevel", "青铜").equals("钻石")) {
+                        Toast.makeText(MainActivity.this, "尊贵的会员,请在微信公众后台联系管理员!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "钻石会员才能加入云群!", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
 
             case R.id.navigation_menu_item_version:
-                Toast.makeText(MainActivity.this, "当前版本是最新的!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "当前版本是最新的!", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.navigation_menu_item_member:
@@ -169,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (!isLogin) {
                     //未登录
                     intent.setFlags(0);//未登录
+                    Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
                 } else {
                     intent.setFlags(1);//登录
                     Bundle bundle = new Bundle();
@@ -176,6 +186,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     intent.putExtras(bundle);
                 }
                 startActivity(intent);
+                break;
+
+            case R.id.navigation_menu_item_integral:
+                //积分
+                if (mLogin_info != null) {
+                    User user = new User();
+                    boolean isLogin = mLogin_info.getBoolean("isLogin", false);
+                    user.setUserIntegral(mLogin_info.getString("integral",""));
+                    user.setUserAccount(mLogin_info.getString("account",""));
+                    user.setUserHeadImg(mLogin_info.getInt("headImg",R.drawable.normal_login));
+                    if (isLogin) {
+                        Intent intents = new Intent(MainActivity.this, IntegralActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("user",user);
+                        intents.putExtras(bundle);
+                        startActivity(intents);
+                    } else {
+                        Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
         }
         return false;
@@ -195,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.main_fab:
-                mDrawerLayout.openDrawer(Gravity.START);
+                mDrawerLayout.openDrawer(Gravity.LEFT);
                 break;
         }
     }
@@ -207,6 +237,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Subscribe(threadMode = ThreadMode.MAIN)//默认优先级为0
     public void handleEvent(MessageEvent event) {
+        //区分哪里发来的事件
+        if (!event.getFlag().equals("login")) {
+            return;
+        }
         User user = event.getUser();
         mUserInfo = user;
         isLogin = mLogin_info.getBoolean("isLogin", false);
@@ -224,8 +258,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mNavigationMemberLevelTv.setText("会员等级:" + user.getMemberLevel());
             mNavigationResidueTv.setVisibility(View.VISIBLE);
             int residueDays = DateFormat.differentDaysByMillisecond(getCurrentDate(), user.getMemberEndDate().getDate());
-            mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
-            Log.i("TAGEventBus-", mLogin_info.getString("memberEndDate", "") + "--" + getCurrentDate());
+            if (residueDays <= 0) {
+                mNavigationResidueTv.setText("您的会员已到期");
+                SharedPreferences.Editor edit = mLogin_info.edit();
+                edit.putBoolean("isExpire", true);
+                edit.apply();
+            } else {
+                mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
+            }
         }
     }
 
@@ -251,7 +291,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mNavigationAccountTv.setText(mLogin_info.getString("account", ""));
                 mNavigationMemberLevelTv.setText("会员等级:" + mLogin_info.getString("memberLevel", "青铜"));
                 int residueDays = DateFormat.differentDaysByMillisecond(getCurrentDate(), mLogin_info.getString("memberEndDate", ""));
-                mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
+                if (residueDays <= 0) {
+                    mNavigationResidueTv.setText("您的会员已到期");
+                    SharedPreferences.Editor edit = mLogin_info.edit();
+                    edit.putBoolean("isExpire", true);
+                    edit.apply();
+                } else {
+                    mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
+                }
+
+
                 mUserInfo.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
                 mUserInfo.setMemberLevel(mLogin_info.getString("memberLevel", "青铜"));
                 mUserInfo.setUserAccount(mLogin_info.getString("account", ""));

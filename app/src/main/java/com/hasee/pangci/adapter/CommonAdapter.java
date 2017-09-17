@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,13 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 
 public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder> {
-    private ArrayList<Resources> mResourcesArrayList;
+    private ArrayList<Resources> mResourcesBeanArrayList;
     private Context context;
     private String videoUrl;//视频地址
     private RecyclerItemOnClickListener mRecyclerItemOnClickListener;
 
     public CommonAdapter(ArrayList<Resources> vlist, Context context) {
-        this.mResourcesArrayList = vlist;
+        this.mResourcesBeanArrayList = vlist;
         this.context = context;
     }
 
@@ -45,29 +46,19 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
 
     @Override
     public void onBindViewHolder(viewHolder holder, final int position) {
-        final Resources resources = mResourcesArrayList.get(position);
-        holder.tvLookNum.setText(resources.getContentLike());
-        holder.tvTitle.setText(resources.getTitle());
-        holder.updateTime.setText(resources.getCreatedAt());
-        //根据httpsType区别视频请求头
-        switch (resources.getHttpstype()) {
-            case "0":
-                //视频地址
-                videoUrl = Constant.MOVIEZEROHEADERURL + resources.getContentId();
-                break;
-            case "1":
-                videoUrl = Constant.MOVIEONEHEADERURL + resources.getContentId();
-                break;
-        }
+        final Resources resourcesBean = mResourcesBeanArrayList.get(position);
+        holder.tvLookNum.setText(resourcesBean.getContentLike());
+        holder.tvTitle.setText(resourcesBean.getTitle());
+        holder.updateTime.setText(resourcesBean.getCreatedAt());
         //根据coverhttptype区分图片请求头
-        switch (resources.getCoverhttptype()) {
+        switch (resourcesBean.getCoverhttptype()) {
             case "0":
                 //封面地址
-                Glide.with(context).load(Constant.ICONZEROHEADERURL + resources.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
+                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
                 break;
 
             case "1":
-                Glide.with(context).load(resources.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
+                Glide.with(context).load(resourcesBean.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
                 break;
         }
 
@@ -78,15 +69,30 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                 SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
                 String mMemberLevel = login_info.getString("memberLevel", "青铜");
                 boolean isLogin = login_info.getBoolean("isLogin", false);
+                Resources resource = mResourcesBeanArrayList.get(position);
+                //根据httpsType区别视频请求头
+                switch (resource.getHttpstype()) {
+                    case "0":
+                        //视频地址
+                        videoUrl = Constant.MOVIEZEROHEADERURL + resourcesBean.getContentId();
+                        break;
+                    case "1":
+                        videoUrl = Constant.MOVIEONEHEADERURL + resourcesBean.getContentId();
+                        break;
+                    case "2":
+                        videoUrl = Constant.MOVIETWOHEADERURL + resource.getContentId();
+                        break;
+                }
                 //判断是否已经登录
                 if (!isLogin) {
                     buildDialog("请登录之后观看!");
                     return;
                 }
                 //判断是否是免费还是收费
-                if (resources.getAuthority().equals("common")) {
+                if (resourcesBean.getAuthority().equals("common")) {
                     //免费直接看
                     openVideo(videoUrl);
+                    Log.i("Adapter", position + "---" + videoUrl);
                 } else {
                     //1.收费
                     //2.看是否是付费会员
@@ -94,8 +100,13 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                         //没付费会员提示开通会员
                         buildDialog("请先升级更高级会员观看!");
                     } else {
-                        //付费会员直接看
+                        //付费会员直接看 看会员是否到期
+                        if(login_info.getBoolean("isExpire",false)){
+                            buildDialog("您的会员已到期,请续费后观看!");
+                            return;
+                        }
                         openVideo(videoUrl);
+                        Log.i("Adapter", position + "---" + videoUrl);
                     }
                 }
             }
@@ -129,7 +140,7 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
 
     @Override
     public int getItemCount() {
-        return mResourcesArrayList != null ? mResourcesArrayList.size() : 0;
+        return mResourcesBeanArrayList != null ? mResourcesBeanArrayList.size() : 0;
     }
 
     class viewHolder extends RecyclerView.ViewHolder {

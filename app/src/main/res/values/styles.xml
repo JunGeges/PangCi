@@ -27,4 +27,12 @@
         <!--<item name="android:textSize">@dimen/toolbar_action_menu_text</item> &lt;!&ndash;字体大小&ndash;&gt;-->
     </style>
 
+    //启动白屏
+    <style name="Theme.Start" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+
+    </style>
+
 </resources>

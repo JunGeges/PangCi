@@ -9,9 +9,11 @@ import com.hasee.pangci.bean.User;
 public class MessageEvent {
 
     private User mUser;
+    private String flag;
 
-    public MessageEvent(User mUser) {
+    public MessageEvent(User mUser, String flag) {
         this.mUser = mUser;
+        this.flag = flag;
     }
 
     public User getUser() {
@@ -22,6 +24,13 @@ public class MessageEvent {
         mUser = user;
     }
 
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
 
 
 }

@@ -122,12 +122,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             edit.putString("account", userTemp.getUserAccount());
                             edit.putString("password", userTemp.getUserPassword());
                             edit.putString("memberLevel", userTemp.getMemberLevel());
+                            edit.putString("integral",userTemp.getUserIntegral());
                             //存储登录状态
                             edit.putBoolean("isLogin", true);
                             edit.apply();
                         } else {
                             //黄金 白金 钻石会员
                             //存进sp
+                            edit.putString("integral",userTemp.getUserIntegral());//积分
                             edit.putInt("headImg", userTemp.getUserHeadImg());
                             edit.putString("account", userTemp.getUserAccount());
                             edit.putString("password", userTemp.getUserPassword());
@@ -139,7 +141,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             edit.apply();
                         }
                         Toast.makeText(LoginActivity.this, "登录成功!", Toast.LENGTH_SHORT).show();
-                        EventBus.getDefault().post(new MessageEvent(userTemp));
+                        EventBus.getDefault().post(new MessageEvent(userTemp,"login"));
+                        Log.i("-----aaa",userTemp.toString());
                         finish();
                         //不显示不知道为啥？？？
  /*                       runOnUiThread(new Runnable() {
@@ -161,7 +164,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 1)
     public void handleEvent(MessageEvent event) {
-        Log.i("LOGIN_TAG", event.getUser().toString());
+        //区分哪里发来的事件
+        if(!event.getFlag().equals("register")){
+            return;
+        }
         EventBus.getDefault().cancelEventDelivery(event);
         //获取来自注册页面的数据
         User userNew = event.getUser();//刚注册的用户
