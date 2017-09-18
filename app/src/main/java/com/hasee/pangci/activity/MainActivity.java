@@ -29,6 +29,7 @@ import com.hasee.pangci.fragment.AnimeFragment;
 import com.hasee.pangci.fragment.MemberFragment;
 import com.hasee.pangci.fragment.MovieFragment;
 import com.hasee.pangci.fragment.RecommendFragment;
+import com.tencent.bugly.beta.Beta;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.navigation_menu_item_version:
-                Toast.makeText(MainActivity.this, "当前版本是最新的!", Toast.LENGTH_LONG).show();
+                Beta.checkUpgrade();
                 break;
 
             case R.id.navigation_menu_item_member:
@@ -299,8 +300,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
                 }
-
-
                 mUserInfo.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
                 mUserInfo.setMemberLevel(mLogin_info.getString("memberLevel", "青铜"));
                 mUserInfo.setUserAccount(mLogin_info.getString("account", ""));

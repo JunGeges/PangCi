@@ -161,7 +161,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
-        android:text="3.邀请好友注册赠送积分20，邀请成功后，注销重新登录即可获取"
+        android:text="3.邀请好友注册赠送积分20，邀请码为自己的账号,
+   邀请成功后，注销重新登录即可获取"
         android:textColor="#999999"
         android:textSize="14dp"
         />
@@ -172,6 +173,17 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         android:text="4.兑换成功后请重新登录应用获取实时会员信息"
+        android:textColor="#999999"
+        android:textSize="14dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:text="5.兑换成功并且重新登录后未得到会员权限,请第一时间
+    在我的消息栏反馈给我们"
         android:textColor="#999999"
         android:textSize="14dp"
         />

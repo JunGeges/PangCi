@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.R;
+import com.hasee.pangci.bean.FeedBack;
 import com.hasee.pangci.bean.User;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -78,19 +80,31 @@ public class IntegralActivity extends AppCompatActivity {
         User user = new User();
         final String tempIntegral = String.valueOf(oIntergral - 100);
         user.setUserIntegral(tempIntegral + "");
-        user.update(objectId,new UpdateListener() {
+        user.update(objectId, new UpdateListener() {
             @Override
             public void done(BmobException e) {
                 if (e == null) {
                     Toast.makeText(IntegralActivity.this, "兑换成功,请重新登录后获取会员时间!", Toast.LENGTH_SHORT).show();
-                    mIntegralTv.setText("当前积分:"+tempIntegral);
+                    mIntegralTv.setText("当前积分:" + tempIntegral);
                     SharedPreferences login_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
                     SharedPreferences.Editor edit = login_info.edit();
                     edit.putString("integral", tempIntegral);
                     edit.apply();
-                } else {
-                    Toast.makeText(IntegralActivity.this, "兑换失败,请重试!", Toast.LENGTH_LONG).show();
-                    Log.i("iiii----",e.getMessage());
+
+                    //兑换成功之后 插入表FeedBack 告知后台兑换了积分 然后给会员添加会员时间 如果是青铜则修改为白银
+                    FeedBack feedBack = new FeedBack();
+                    feedBack.setUserName(mUser.getUserAccount());
+                    feedBack.setContent("兑换积分成功");
+                    feedBack.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if (e == null) {
+                                Log.i("FeedBack","成功");
+                            }else {
+                                Log.i("FeedBack",e.getMessage());
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -121,6 +135,4 @@ public class IntegralActivity extends AppCompatActivity {
         String temp = TextUtils.isEmpty(userIntegral) ? "当前积分:0" : "当前积分:" + userIntegral;
         mIntegralTv.setText(temp);
     }
-
-
 }

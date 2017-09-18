@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.hasee.pangci.Common.MessageEvent;
 import com.hasee.pangci.R;
@@ -32,11 +31,11 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(PushConstants.ACTION_MESSAGE)) {
-            Log.i("bmob", "客户端收到推送内容：" + intent.getStringExtra("msg"));
             try {
                 JSONObject jsonObject = new JSONObject(intent.getStringExtra("msg"));
+                String title =jsonObject.getString("title");
                 String content = jsonObject.getString("alert");
-                buildNotification(context, content);
+                buildNotification(context, content,title);
 
                 //数据插到本地数据库
                 NotificationBean notificationBean = new NotificationBean();
@@ -50,7 +49,7 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
         }
     }
 
-    private void buildNotification(Context context, String str) {
+    private void buildNotification(Context context, String str,String title) {
         Intent intent = null;
         SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", Context.MODE_PRIVATE);
         if (login_info.getBoolean("isLogin", false)) {
@@ -61,7 +60,7 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new NotificationCompat.Builder(context)
-                .setContentTitle("会员信息通知!")
+                .setContentTitle(title)
                 .setContentText(str)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.logo)

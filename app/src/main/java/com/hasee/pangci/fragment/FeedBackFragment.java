@@ -46,6 +46,7 @@ public class FeedBackFragment extends Fragment {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
+                    mContentEt.setText("");
                     Toast.makeText(getActivity(), "反馈成功,后台将在第一时间回复您.", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getActivity(), "反馈失败,请重试!", Toast.LENGTH_LONG).show();

@@ -6,13 +6,13 @@ package com.hasee.pangci.Common;
 
 public class Constant {
     //Bmob配置信息
-    public static final String APPLICATIONID="508de0f2b5a9cd5e69b1921bb45f5cbd";
+    public static final String BMOBAPPLICATIONID="508de0f2b5a9cd5e69b1921bb45f5cbd";
 
-    public static final String RESTAPIKEY="7698cafec3a09fdb70790dcc413b12e6";
+    public static final String BMOBRESTAPIKEY="7698cafec3a09fdb70790dcc413b12e6";
 
-    public static final String SECRET="69295fd4c4937103";
+    public static final String BMOBSECRET="69295fd4c4937103";
 
-    public static final String MASTERKEY="73af0d13c31e3c8e2e9930ace19d235b";
+    public static final String BMOBMASTERKEY="73af0d13c31e3c8e2e9930ace19d235b";
 
     public static final String ICONHEADERURL="http://api2.36cj.com/?vid=";
     //httptype
@@ -31,4 +31,11 @@ public class Constant {
     public static final String ICONZEROHEADERURL="http://api2.36cj.com/apitu.php?vid=";
 
     //1 类 电影图片是完整的请求头 不带请求头
+
+
+
+    //Bugly
+    public static final String BUGLYAPPLICATIONID="59cf1fa7b5";
+
+    public static final String BUGLYAPPKEY="29314618-b31b-4017-9d69-6ba44ce47cfe";
 }
