@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ public class SplashActivity extends AppCompatActivity {
     @BindView(R.id.iv_splash)
     ImageView mImageView;
     private AnimatorSet mAnimatorSet;
+    private boolean mIsSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,11 @@ public class SplashActivity extends AppCompatActivity {
         mAnimatorSet.playTogether(objectAnimatorX,objectAnimatorY);
         mAnimatorSet.setDuration(2000);
         addListener();
+
+
+        //判断是否有设置手势密码
+        SharedPreferences lock_info = getSharedPreferences("LOCK_INFO", MODE_PRIVATE);
+        mIsSetting = lock_info.getBoolean("isSetting", false);
     }
 
     private void addListener() {
@@ -48,9 +55,15 @@ public class SplashActivity extends AppCompatActivity {
             public void onAnimationEnd(Animator animation) {
                 try {
                     Thread.sleep(500);
-                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if(mIsSetting){
+                        Intent intent = new Intent(SplashActivity.this,VerifyLockActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

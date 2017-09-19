@@ -194,19 +194,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (mLogin_info != null) {
                     User user = new User();
                     boolean isLogin = mLogin_info.getBoolean("isLogin", false);
-                    user.setUserIntegral(mLogin_info.getString("integral",""));
-                    user.setUserAccount(mLogin_info.getString("account",""));
-                    user.setUserHeadImg(mLogin_info.getInt("headImg",R.drawable.normal_login));
+                    user.setUserIntegral(mLogin_info.getString("integral", ""));
+                    user.setUserAccount(mLogin_info.getString("account", ""));
+                    user.setUserHeadImg(mLogin_info.getInt("headImg", R.drawable.normal_login));
                     if (isLogin) {
                         Intent intents = new Intent(MainActivity.this, IntegralActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("user",user);
+                        bundle.putSerializable("user", user);
                         intents.putExtras(bundle);
                         startActivity(intents);
                     } else {
                         Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
                     }
                 }
+                break;
+
+            case R.id.navigation_menu_item_lock:
+                Intent intent1 = new Intent(MainActivity.this,LockActivity.class);
+                startActivity(intent1);
                 break;
         }
         return false;

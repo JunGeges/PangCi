@@ -1,9 +1,5 @@
 package com.hasee.pangci.Common;
 
-/**
- * Created by 高俊 on 2017/9/9.
- */
-
 public class Constant {
     //Bmob配置信息
     public static final String BMOBAPPLICATIONID="508de0f2b5a9cd5e69b1921bb45f5cbd";

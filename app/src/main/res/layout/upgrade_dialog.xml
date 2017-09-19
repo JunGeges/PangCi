@@ -23,7 +23,7 @@
             android:tag="textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="customText"/>
+            android:text="pangci"/>
 
         <!-- 【必设】升级标题控件tag：beta_title-->
         <TextView

@@ -21,6 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MemberCenterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -39,6 +40,16 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
     CircleImageView mHeadIcon;
     @BindViews({R.id.member_center_v1_cv, R.id.member_center_v2_cv, R.id.member_center_v3_cv, R.id.member_center_v4_cv})
     List<CardView> mCardViews;
+    private int mFlags;
+
+    @OnClick(R.id.iv_user_icon)
+    void onClick() {
+        if (mFlags == 0){
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +73,17 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
-        for (CardView cardView:mCardViews) {
+        for (CardView cardView : mCardViews) {
             cardView.setOnClickListener(this);
         }
+
+
     }
 
     private void getIntentData() {
         Intent intent = getIntent();
-        if (intent.getFlags() == 1) {
+        mFlags = intent.getFlags();
+        if (mFlags == 1) {
             Bundle bundle = intent.getExtras();
             User user = (User) bundle.getSerializable("user");
             mUserNameTv.setText(user.getUserAccount());
@@ -92,6 +106,8 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         TextView tv_1 = (TextView) inflate_dialog.findViewById(R.id.tv_1);
         TextView tv_2 = (TextView) inflate_dialog.findViewById(R.id.tv_2);
         TextView tv_3 = (TextView) inflate_dialog.findViewById(R.id.tv_3);
+        TextView tv_title = (TextView) inflate_dialog.findViewById(R.id.tv_title);
+        tv_title.setText("充值提示");
         tv_1.setText(tv1);
         tv_2.setText(tv2);
         tv_3.setText(tv3);
@@ -102,7 +118,6 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
                 hintDialog.dismiss();
             }
         });
-
     }
 
     @Override
