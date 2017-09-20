@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:scaleType="centerCrop"
+            android:layout_alignBottom="@+id/iv_right"
             android:src="@drawable/ic_22"/>
 
         <ImageView
@@ -42,6 +43,7 @@
             />
 
         <ImageView
+            android:id="@+id/iv_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -54,8 +56,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         >
@@ -80,6 +82,7 @@
                 android:background="@null"
                 android:hint="请输入账号"
                 android:singleLine="true"
+                android:textSize="16sp"
                 android:textColorHint="#80FA7298"
                 />
 
@@ -97,8 +100,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         >
@@ -125,6 +128,7 @@
                 android:password="true"
                 android:singleLine="true"
                 android:textColorHint="#80FA7298"
+                android:textSize="16sp"
                 />
 
         </LinearLayout>
@@ -142,8 +146,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         >
@@ -170,6 +174,7 @@
                 android:password="true"
                 android:singleLine="true"
                 android:textColorHint="#80FA7298"
+                android:textSize="16sp"
                 />
 
         </LinearLayout>
@@ -188,8 +193,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         >
@@ -215,6 +220,7 @@
                 android:hint="邀请人账号(可为空)"
                 android:singleLine="true"
                 android:textColorHint="#80FA7298"
+                android:textSize="16sp"
                 />
 
         </LinearLayout>

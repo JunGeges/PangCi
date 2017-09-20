@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.hasee.pangci.Common.MessageEvent;
 import com.hasee.pangci.R;
@@ -23,10 +24,6 @@ import org.json.JSONObject;
 
 import cn.bmob.push.PushConstants;
 
-/**
- * Created by Administrator on 2017/9/14.
- */
-
 public class MyPushMessageReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -35,6 +32,7 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
                 JSONObject jsonObject = new JSONObject(intent.getStringExtra("msg"));
                 String title =jsonObject.getString("title");
                 String content = jsonObject.getString("alert");
+                Log.i("receiver", "onReceive--: "+title+"---"+content);
                 buildNotification(context, content,title);
 
                 //数据插到本地数据库

@@ -50,8 +50,8 @@ public class VerifyLockActivity extends AppCompatActivity {
 
         //获取存取的登录信息
         SharedPreferences login_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
-        mAccount = lock_info.getString("account", "");
-        mPassword = lock_info.getString("password", "");
+        mAccount = login_info.getString("account", "");
+        mPassword = login_info.getString("password", "");
 
         mGraphicLockView.setOnGraphicLockListener(new GraphicLockView.OnGraphicLockListener() {
             @Override
@@ -74,16 +74,23 @@ public class VerifyLockActivity extends AppCompatActivity {
 
     private void showDialog() {
 
-        AlertDialog hintDialog = new AlertDialog.Builder(VerifyLockActivity.this, R.style.ShowDialog).create();
+        final AlertDialog hintDialog = new AlertDialog.Builder(VerifyLockActivity.this, R.style.ShowDialog).create();
         View inflate_dialog = LayoutInflater.from(VerifyLockActivity.this).inflate(R.layout.verify_dialog_hint, null);
         hintDialog.show();
         hintDialog.setContentView(inflate_dialog);
 
         TextView account = (TextView) inflate_dialog.findViewById(R.id.tv_account);
-        TextView cofirm = (TextView) inflate_dialog.findViewById(R.id.tv_confirm);
+        TextView confirm = (TextView) inflate_dialog.findViewById(R.id.tv_confirm);
+        TextView cancel = (TextView) inflate_dialog.findViewById(R.id.tv_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hintDialog.dismiss();
+            }
+        });
         final EditText password = (EditText) inflate_dialog.findViewById(R.id.et_pwd);
         account.setText("胖次账户:"+mAccount);
-        cofirm.setOnClickListener(new View.OnClickListener() {
+        confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(password.getText().toString().trim().equals(mPassword)){
@@ -95,5 +102,7 @@ public class VerifyLockActivity extends AppCompatActivity {
                 }
             }
         });
+
+        hintDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 }

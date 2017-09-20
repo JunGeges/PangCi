@@ -210,8 +210,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.navigation_menu_item_lock:
-                Intent intent1 = new Intent(MainActivity.this,LockActivity.class);
-                startActivity(intent1);
+                if (mLogin_info != null) {
+                    boolean isLogin = mLogin_info.getBoolean("isLogin", false);
+                    if (isLogin) {
+                        Intent intent1 = new Intent(MainActivity.this, LockActivity.class);
+                        startActivity(intent1);
+                    } else {
+                        Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
         }
         return false;

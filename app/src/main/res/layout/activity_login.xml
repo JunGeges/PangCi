@@ -34,6 +34,7 @@
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:layout_alignParentLeft="true"
+            android:layout_alignBottom="@+id/iv_33"
             android:src="@drawable/ic_22"/>
 
         <ImageView
@@ -45,6 +46,7 @@
 
 
         <ImageView
+            android:id="@+id/iv_33"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
@@ -58,8 +60,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         >
@@ -84,6 +86,7 @@
                 android:singleLine="true"
                 android:hint="请确认账号"
                 android:textColorHint="#80FA7298"
+                android:textSize="16sp"
                 />
 
         </LinearLayout>
@@ -100,8 +103,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         >
@@ -127,6 +130,7 @@
                 android:singleLine="true"
                 android:hint="请输入密码"
                 android:textColorHint="#80FA7298"
+                android:textSize="16sp"
                 />
 
         </LinearLayout>
@@ -143,8 +147,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
         android:orientation="horizontal"
         >

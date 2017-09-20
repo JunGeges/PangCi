@@ -1,6 +1,7 @@
 package com.hasee.pangci.app;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.hasee.pangci.Common.Constant;
 import com.hasee.pangci.R;
@@ -13,8 +14,9 @@ import org.litepal.LitePalApplication;
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobInstallation;
-
-import static android.provider.UserDictionary.Words.APP_ID;
+import cn.bmob.v3.BmobInstallationManager;
+import cn.bmob.v3.InstallationListener;
+import cn.bmob.v3.exception.BmobException;
 
 public class MyApplication extends LitePalApplication {
 
@@ -23,7 +25,17 @@ public class MyApplication extends LitePalApplication {
         super.onCreate();
         Bmob.initialize(this, Constant.BMOBAPPLICATIONID);
         // 使用推送服务时的初始化操作
-        BmobInstallation.getCurrentInstallation().save();
+        BmobInstallationManager.getInstance().initialize(new InstallationListener<BmobInstallation>() {
+            @Override
+            public void done(BmobInstallation bmobInstallation, BmobException e) {
+                if (e == null) {
+                    Log.i("APP", bmobInstallation.getObjectId() + "----" + bmobInstallation.getInstallationId());
+                } else {
+                    Log.i("APP", e.getMessage());
+                }
+            }
+        });
+        //启动推送服务
         BmobPush.startWork(this);
 
 
