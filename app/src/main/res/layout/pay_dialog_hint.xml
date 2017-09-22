@@ -2,22 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:id="@+id/pay_dialog_ll"
+              android:layout_marginLeft="60dp"
+              android:layout_marginRight="60dp"
               android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginRight="45dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/shap"
         android:orientation="vertical"
+        android:gravity="center"
         >
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
             android:gravity="center_horizontal"
             android:paddingLeft="15dp"
@@ -30,11 +31,11 @@
             android:id="@+id/tv_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="12dp"
             android:gravity="left"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="1.请关注微信公众号“壹号电影”"
+            android:text="1.请关注微信公众号:壹号电影"
             android:textColor="#333333"
             android:textSize="14dp"
             />
@@ -43,11 +44,12 @@
             android:id="@+id/tv_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="12dp"
             android:gravity="left"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="2.点击该公众号菜单栏“胖次有你”找到充值一栏即可开通"
+            android:maxLines="3"
             android:textColor="#333333"
             android:textSize="14dp"
             />
@@ -56,7 +58,7 @@
             android:id="@+id/tv_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="117dp"
+            android:layout_marginTop="12dp"
             android:gravity="left"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
@@ -69,16 +71,15 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="33dp"
+            android:layout_marginTop="12dp"
             android:background="#eeeded"
             />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             >
 
             <TextView
@@ -94,5 +95,5 @@
                 />
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

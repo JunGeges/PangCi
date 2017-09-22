@@ -48,7 +48,7 @@ public class IntegralActivity extends AppCompatActivity {
                 //兑换后 修改数据库积分并新增一个月时间 存到sp
                 updateAndQueryDb();
             } else {
-                Toast.makeText(this, "您的积分不足!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "您的积分不足,赶紧邀请好友注册吧!", Toast.LENGTH_LONG).show();
             }
         }
     }

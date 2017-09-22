@@ -127,8 +127,8 @@ public class DataCleanManagerUtils {
                 + context.getPackageName() + "/shared_prefs"));
     }*/
 
-    public static void cleanSharedPreference(Context context){
-        SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", Context.MODE_PRIVATE);
+    public static void cleanSharedPreference(Context context,String name){
+        SharedPreferences login_info = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = login_info.edit();
         edit.clear();
         edit.commit();

@@ -42,7 +42,7 @@ public class UpdatePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_password);
         ButterKnife.bind(this);
-        mToolbar.setTitle("修改密码");
+        mToolbar.setTitle("重置密码");
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

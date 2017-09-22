@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +68,7 @@ public class LockActivity extends AppCompatActivity implements GraphicLockView.O
                 if (mPassword.equals(password)) {
                     Log.d("GraphicLockActivity--->", "password====" + mPassword);
                     Toast.makeText(this, "设置密码成功", Toast.LENGTH_SHORT).show();
-                    mTvIno.setText("下次进应用时请先验证手势密码");
+                    mTvIno.setText("再次进应用需验证此手势密码");
                     //存到Sp里面
                     SharedPreferences lock_info = getSharedPreferences("LOCK_INFO", MODE_PRIVATE);
                     SharedPreferences.Editor edit = lock_info.edit();
@@ -114,10 +114,16 @@ public class LockActivity extends AppCompatActivity implements GraphicLockView.O
 
     private void showDialog(String tv1, String tv2, String tv3) {
 
-        final AlertDialog hintDialog = new AlertDialog.Builder(LockActivity.this, R.style.ShowDialog).create();
-        View inflate_dialog = LayoutInflater.from(LockActivity.this).inflate(R.layout.pay_dialog_hint, null);
-        hintDialog.show();
-        hintDialog.setContentView(inflate_dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        /**
+         * 设置内容区域为自定义View
+         */
+        LinearLayout inflate_dialog= (LinearLayout) getLayoutInflater().inflate(R.layout.pay_dialog_hint,null);
+        builder.setView(inflate_dialog);
+
+        final AlertDialog dialog=builder.create();
+        dialog.show();
 
         TextView tv_1 = (TextView) inflate_dialog.findViewById(R.id.tv_1);
         TextView tv_2 = (TextView) inflate_dialog.findViewById(R.id.tv_2);
@@ -131,7 +137,7 @@ public class LockActivity extends AppCompatActivity implements GraphicLockView.O
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hintDialog.dismiss();
+                dialog.dismiss();
             }
         });
     }

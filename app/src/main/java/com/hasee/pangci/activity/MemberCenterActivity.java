@@ -1,13 +1,12 @@
 package com.hasee.pangci.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +40,8 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
     @BindViews({R.id.member_center_v1_cv, R.id.member_center_v2_cv, R.id.member_center_v3_cv, R.id.member_center_v4_cv})
     List<CardView> mCardViews;
     private int mFlags;
+    @BindView(R.id.activity_rechange)
+    LinearLayout mLinearLayout;
 
     @OnClick(R.id.iv_user_icon)
     void onClick() {
@@ -97,11 +98,16 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void showDialog(String tv1, String tv2, String tv3) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        final AlertDialog hintDialog = new AlertDialog.Builder(MemberCenterActivity.this, R.style.ShowDialog).create();
-        View inflate_dialog = LayoutInflater.from(MemberCenterActivity.this).inflate(R.layout.pay_dialog_hint, null);
-        hintDialog.show();
-        hintDialog.setContentView(inflate_dialog);
+        /**
+         * 设置内容区域为自定义View
+         */
+        LinearLayout inflate_dialog= (LinearLayout) getLayoutInflater().inflate(R.layout.pay_dialog_hint,null);
+        builder.setView(inflate_dialog);
+
+        final AlertDialog dialog=builder.create();
+        dialog.show();
 
         TextView tv_1 = (TextView) inflate_dialog.findViewById(R.id.tv_1);
         TextView tv_2 = (TextView) inflate_dialog.findViewById(R.id.tv_2);
@@ -115,7 +121,7 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hintDialog.dismiss();
+                dialog.dismiss();
             }
         });
     }

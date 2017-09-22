@@ -146,8 +146,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.navigation_menu_item_exit:
                 Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                //清除sp内容退出
-                DataCleanManagerUtils.cleanSharedPreference(this);
+                //清除账号缓存信息
+                DataCleanManagerUtils.cleanSharedPreference(this,"LOGIN_INFO");
+                //清除手势锁的缓存信息
+                DataCleanManagerUtils.cleanSharedPreference(this,"LOCK_INFO");
 
                 mNavigationMemberInfoLl.setVisibility(View.GONE);//隐藏会员信息布局
                 mNavigationAccountTv.setText("点击登录");
@@ -162,10 +164,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.navigation_menu_item_flock:
                 if (mLogin_info != null && mLogin_info.getBoolean("isLogin", false)) {
-                    if (mLogin_info.getString("memberLevel", "青铜").equals("钻石")) {
-                        Toast.makeText(MainActivity.this, "尊贵的会员,请在微信公众后台联系管理员!", Toast.LENGTH_LONG).show();
-                    } else {
+                    if (!mLogin_info.getBoolean("isLogin",false)) {
+                        Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
+                    } else if (mLogin_info.getString("memberLevel", "青铜").equals("青铜")) {
+                        Toast.makeText(this, "请先升级会员", Toast.LENGTH_SHORT).show();
+                    } else if (!mLogin_info.getString("memberLevel", "青铜").equals("钻石")) {
                         Toast.makeText(this, "钻石会员才能加入云群!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "尊贵的会员,请在微信公众后台联系管理员!", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;

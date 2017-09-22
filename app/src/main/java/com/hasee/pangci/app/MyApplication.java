@@ -57,7 +57,7 @@ public class MyApplication extends LitePalApplication {
         /**
          * 设置升级周期为60s（默认检查周期为0s），60s内SDK不重复向后天请求策略
          */
-        Beta.initDelay = 1 * 1000;
+        Beta.initDelay = 1000;
 
         /**
          * 设置通知栏大图标，largeIconId为项目中的图片资源；

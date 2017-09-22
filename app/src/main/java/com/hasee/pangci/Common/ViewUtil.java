@@ -3,9 +3,7 @@ package com.hasee.pangci.Common;
 
 import com.hasee.pangci.widget.Point;
 
-/**
- * Created by Jack on 16/10/12.
- */
+
 public class ViewUtil {
     /**
      * 两点之间的距离

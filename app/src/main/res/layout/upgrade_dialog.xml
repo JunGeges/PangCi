@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:background="#FFF"
+        android:background="@drawable/shap"
         android:gravity="center"
         android:orientation="vertical">
 

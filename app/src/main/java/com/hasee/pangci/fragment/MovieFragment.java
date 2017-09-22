@@ -62,7 +62,6 @@ public class MovieFragment extends Fragment {
                     if (e == null) {
                         for (int i = 0; i < list.size(); i++) {
                             Resources resourcesBean = list.get(i);
-                            Log.i("TAGS//////***", list.get(i).toString());
                             mResourcesBeanArrayList.add(resourcesBean);
                         }
                         CommonAdapter adapter = new CommonAdapter(mResourcesBeanArrayList, getActivity());

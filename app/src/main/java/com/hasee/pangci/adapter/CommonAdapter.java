@@ -54,11 +54,11 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
         switch (resourcesBean.getCoverhttptype()) {
             case "0":
                 //封面地址
-                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
+                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).error(R.drawable.ic_load_empty).into(holder.ivCover);
                 break;
 
             case "1":
-                Glide.with(context).load(resourcesBean.getCover()).error(R.drawable.icon_load_error).into(holder.ivCover);
+                Glide.with(context).load(resourcesBean.getCover()).error(R.drawable.ic_load_empty).into(holder.ivCover);
                 break;
         }
 
