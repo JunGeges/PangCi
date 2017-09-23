@@ -2,18 +2,18 @@ package com.hasee.pangci.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.Common.Constant;
 import com.hasee.pangci.R;
 import com.hasee.pangci.bean.Resources;
@@ -46,6 +46,13 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
 
     @Override
     public void onBindViewHolder(viewHolder holder, final int position) {
+        if (position == mResourcesBeanArrayList.size() - 1 || position == mResourcesBeanArrayList.size() - 2) {
+            //给最后一个view添加底部margin
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(CommonUtils.dp2px(160,context),CommonUtils.dp2px(200,context));
+            layoutParams.setMargins(CommonUtils.dp2px(10,context), CommonUtils.dp2px(10,context), 0, CommonUtils.dp2px(10,context));
+            holder.itemView.setLayoutParams(layoutParams);
+
+        }
         final Resources resourcesBean = mResourcesBeanArrayList.get(position);
         holder.tvLookNum.setText(resourcesBean.getContentLike());
         holder.tvTitle.setText(resourcesBean.getTitle());
@@ -54,7 +61,7 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
         switch (resourcesBean.getCoverhttptype()) {
             case "0":
                 //封面地址
-                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).error(R.drawable.ic_load_empty).into(holder.ivCover);
+                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).placeholder(R.drawable.vip).error(R.drawable.ic_load_empty).into(holder.ivCover);
                 break;
 
             case "1":
@@ -80,7 +87,7 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                         videoUrl = Constant.MOVIEONEHEADERURL + resourcesBean.getContentId();
                         break;
                     case "2":
-                        videoUrl = Constant.MOVIETWOHEADERURL + resource.getContentId();
+                        videoUrl = Constant.WPHEADERURL + resourcesBean.getContentId();
                         break;
                 }
                 //判断是否已经登录
@@ -91,7 +98,7 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                 //判断是否是免费还是收费
                 if (resourcesBean.getAuthority().equals("common")) {
                     //免费直接看
-                    openVideo(videoUrl);
+                    CommonUtils.openURL(videoUrl,context);
                     Log.i("Adapter", position + "---" + videoUrl);
                 } else {
                     //1.收费
@@ -101,11 +108,11 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                         buildDialog("请先升级更高级会员观看!");
                     } else {
                         //付费会员直接看 看会员是否到期
-                        if(login_info.getBoolean("isExpire",false)){
+                        if (login_info.getBoolean("isExpire", false)) {
                             buildDialog("您的会员已到期,请续费后观看!");
                             return;
                         }
-                        openVideo(videoUrl);
+                        CommonUtils.openURL(videoUrl,context);
                         Log.i("Adapter", position + "---" + videoUrl);
                     }
                 }
@@ -128,14 +135,6 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                 hintDialog.dismiss();
             }
         });
-    }
-
-    private void openVideo(String videoUrl) {
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.VIEW");
-        Uri content_url = Uri.parse(videoUrl);
-        intent.setData(content_url);
-        context.startActivity(intent);
     }
 
     @Override
@@ -164,4 +163,5 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
     public void setRecyclerItemOnClickListener(RecyclerItemOnClickListener itemOnClickListener) {
         mRecyclerItemOnClickListener = itemOnClickListener;
     }
+
 }

@@ -1,7 +1,9 @@
 package com.hasee.pangci.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +30,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public NotificationAdapter(ArrayList<NotificationBean> notificationBeanArrayList, Context context) {
         this.notificationBeanArrayList = notificationBeanArrayList;
         this.mContext = context;
-        mLayoutInflater=LayoutInflater.from(mContext);
+        mLayoutInflater = LayoutInflater.from(mContext);
     }
 
     @Override
@@ -41,12 +43,27 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         NotificationBean notificationBean = notificationBeanArrayList.get(position);
-        holder.mContentTv.setText(notificationBean.getNotificationContent());
+
+        if (notificationBean.getTag().equals("1")) {
+            //链接 颜色加深 可点击跳转
+            holder.mContentTv.setTextColor(Color.BLUE);
+            holder.mContentTv.setText(Html.fromHtml("<u>"+notificationBean.getNotificationContent()+"</u>"));
+        } else {
+            holder.mContentTv.setText(notificationBean.getNotificationContent());
+        }
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                recyclerItemOnClickListener.onItemClick(position);
+                recyclerItemOnClickListener.onItemLongClick(position);
                 return false;
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerItemOnClickListener.onItemClick(position);
             }
         });
     }
@@ -56,19 +73,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationBeanArrayList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_content_tv)
         TextView mContentTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
     private RecyclerItemOnClickListener recyclerItemOnClickListener;
 
-    public void setRecyclerItemOnClickListener(RecyclerItemOnClickListener recyclerItemOnClickListener){
-        this.recyclerItemOnClickListener=recyclerItemOnClickListener;
+    public void setRecyclerItemOnClickListener(RecyclerItemOnClickListener recyclerItemOnClickListener) {
+        this.recyclerItemOnClickListener = recyclerItemOnClickListener;
     }
 }

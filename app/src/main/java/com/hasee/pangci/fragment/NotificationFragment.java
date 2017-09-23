@@ -1,5 +1,7 @@
 package com.hasee.pangci.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -100,13 +102,25 @@ public class NotificationFragment extends Fragment implements RecyclerItemOnClic
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemLongClick(int position) {
         NotificationBean notificationBean = notificationBeanArrayList.get(position);
         NotificationBean.delete(NotificationBean.class, notificationBean.getId());
         notificationBeanArrayList.remove(position);
         notificationAdapter.notifyDataSetChanged();
         if (notificationBeanArrayList.size() == 0) {
             mRelativeLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        NotificationBean notificationBean = notificationBeanArrayList.get(position);
+        if(notificationBean.getTag().equals("1")){
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            Uri content_url = Uri.parse(notificationBean.getNotificationContent());
+            intent.setData(content_url);
+            startActivity(intent);
         }
     }
 }

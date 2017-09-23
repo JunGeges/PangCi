@@ -23,13 +23,16 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
-public class MovieFragment extends Fragment {
-    private static final String TAG = "MovieFragment";
+/**
+ * Created by Administrator on 2017/9/23.
+ */
+
+public class NetdiskFragment extends Fragment {
+    private View mView;
     @BindView(R.id.rl_video_list)
     RecyclerView rlVideoList;
     private ArrayList<Resources> mResourcesBeanArrayList = new ArrayList<>();
-    private static final String RESOURCETYPE = "video";
-    private View mView;
+    private static final String RESOURCETYPE = "netdisk";
 
     @Nullable
     @Override
@@ -42,7 +45,7 @@ public class MovieFragment extends Fragment {
             ButterKnife.bind(this, mView);
             return mView;
         }
-        mView = inflater.inflate(R.layout.movie_fragment_layout, container, false);
+        mView = inflater.inflate(R.layout.member_fragment_layout, container, false);
         ButterKnife.bind(this, mView);
         return mView;
     }
@@ -50,7 +53,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //查询电影类的资源
+        //查询Anime类的资源
         if (mResourcesBeanArrayList.size() == 0) {
             BmobQuery<Resources> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("ContentType", RESOURCETYPE);

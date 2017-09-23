@@ -28,6 +28,8 @@ public class Constant {
 
     //1 类 电影图片是完整的请求头 不带请求头
 
+    //网盘资源请求头
+    public static final String WPHEADERURL="http://pan.baidu.com/s/";
 
 
     //Bugly

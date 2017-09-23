@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,17 +54,18 @@ public class AnimeFragment extends Fragment {
         if (mResourcesBeanArrayList.size() == 0) {
             BmobQuery<Resources> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("ContentType", RESOURCETYPE);
+            bmobQuery.order("-createdAt");//降序
             bmobQuery.findObjects(new FindListener<Resources>() {
                 @Override
                 public void done(List<Resources> list, BmobException e) {
                     if (e == null) {
                         for (int i = 0; i < list.size(); i++) {
                             Resources resourcesBean = list.get(i);
-                            Log.i("TAGS//////***", list.get(i).toString());
                             mResourcesBeanArrayList.add(resourcesBean);
                         }
                         CommonAdapter adapter = new CommonAdapter(mResourcesBeanArrayList, getActivity());
-                        rlVideoList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+                        rlVideoList.setLayoutManager(gridLayoutManager);
                         rlVideoList.setAdapter(adapter);
                     } else {
                         Toast.makeText(getActivity(), "非法操作,请重试!", Toast.LENGTH_SHORT).show();

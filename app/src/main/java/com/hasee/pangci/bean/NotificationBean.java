@@ -9,6 +9,8 @@ public class NotificationBean extends DataSupport{
 
     private String notificationContent;
 
+    private String tag;
+
     public String getNotificationContent() {
         return notificationContent;
     }
@@ -25,10 +27,19 @@ public class NotificationBean extends DataSupport{
         this.id = id;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     @Override
     public String toString() {
         return "NotificationBean{" +
                 ", notificationContent='" + notificationContent + '\'' +
+                ",tag='"+tag+'\''+
                 '}';
     }
 }

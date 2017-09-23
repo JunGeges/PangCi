@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.hasee.pangci.Common.MessageEvent;
@@ -24,17 +25,22 @@ import org.json.JSONObject;
 import cn.bmob.push.PushConstants;
 
 public class MyPushMessageReceiver extends BroadcastReceiver {
+    private static final String NORMAL = "0";
+    private static final String LINK = "1";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(PushConstants.ACTION_MESSAGE)) {
             try {
                 JSONObject jsonObject = new JSONObject(intent.getStringExtra("msg"));
-                String title =jsonObject.getString("title");
-                String content = jsonObject.getString("alert");
-                buildNotification(context, content,title);
+                String tag = jsonObject.getString("tag");
+                String title = jsonObject.getString("title");
+                String content = jsonObject.getString("content");
+                buildNotification(context, content, title, tag);
 
                 //数据插到本地数据库
                 NotificationBean notificationBean = new NotificationBean();
+                notificationBean.setTag(tag);
                 notificationBean.setNotificationContent(content);
                 notificationBean.save();
                 EventBus.getDefault().post(new MessageEvent(new User(), "receiver"));
@@ -45,19 +51,29 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
         }
     }
 
-    private void buildNotification(Context context, String str,String title) {
+    private void buildNotification(Context context, String content, String title, String tag) {
         Intent intent = null;
         SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", Context.MODE_PRIVATE);
-        if (login_info.getBoolean("isLogin", false)) {
-            intent = new Intent(context, NotificationActivity.class);
-        } else {
+        boolean isLogin = login_info.getBoolean("isLogin", false);
+        if (!isLogin) {
             intent = new Intent(context, LoginActivity.class);
+        } else {
+            //登录的情况 区分普通推送与链接推送
+            if(tag.equals(NORMAL)){
+                intent = new Intent(context, NotificationActivity.class);
+            }else {
+                //
+                intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(content);
+                intent.setData(content_url);
+            }
         }
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new NotificationCompat.Builder(context)
                 .setContentTitle(title)
-                .setContentText(str)
+                .setContentText(content)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.logo))

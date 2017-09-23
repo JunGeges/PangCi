@@ -55,6 +55,7 @@ public class MemberFragment extends Fragment {
         if (mResourcesBeanArrayList.size() == 0) {
             BmobQuery<Resources> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("ContentType", RESOURCETYPE);
+            bmobQuery.order("-createdAt");//降序
             bmobQuery.findObjects(new FindListener<Resources>() {
                 @Override
                 public void done(List<Resources> list, BmobException e) {
@@ -64,7 +65,8 @@ public class MemberFragment extends Fragment {
                             mResourcesBeanArrayList.add(resourcesBean);
                         }
                         CommonAdapter adapter = new CommonAdapter(mResourcesBeanArrayList, getActivity());
-                        rlVideoList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+                        rlVideoList.setLayoutManager(gridLayoutManager);
                         rlVideoList.setAdapter(adapter);
                     } else {
                         Toast.makeText(getActivity(), "非法操作,请重试!"+e.getMessage(), Toast.LENGTH_SHORT).show();

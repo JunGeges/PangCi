@@ -28,6 +28,7 @@ import com.hasee.pangci.bean.User;
 import com.hasee.pangci.fragment.AnimeFragment;
 import com.hasee.pangci.fragment.MemberFragment;
 import com.hasee.pangci.fragment.MovieFragment;
+import com.hasee.pangci.fragment.NetdiskFragment;
 import com.hasee.pangci.fragment.RecommendFragment;
 import com.tencent.bugly.beta.Beta;
 
@@ -61,8 +62,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecommendFragment recommendFragment = new RecommendFragment();
     private MovieFragment movieFragment = new MovieFragment();
     private AnimeFragment animeFragment = new AnimeFragment();
-    private String[] tabTitles = {"推荐", "影视", "腐漫", "VIP专区"};
-    private Fragment[] fragments = {recommendFragment, movieFragment, animeFragment, memberFragment};
+    private NetdiskFragment netdiskFragment = new NetdiskFragment();
+    private String[] tabTitles = {"推荐", "影视", "腐漫", "网盘", "VIP专区"};
+    private Fragment[] fragments = {recommendFragment, movieFragment, animeFragment, netdiskFragment, memberFragment};
     private ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
     private View mNavigationMemberInfoLl;
     private TextView mNavigationAccountTv;
@@ -147,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.navigation_menu_item_exit:
                 Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                 //清除账号缓存信息
-                DataCleanManagerUtils.cleanSharedPreference(this,"LOGIN_INFO");
+                DataCleanManagerUtils.cleanSharedPreference(this, "LOGIN_INFO");
                 //清除手势锁的缓存信息
-                DataCleanManagerUtils.cleanSharedPreference(this,"LOCK_INFO");
+                DataCleanManagerUtils.cleanSharedPreference(this, "LOCK_INFO");
 
                 mNavigationMemberInfoLl.setVisibility(View.GONE);//隐藏会员信息布局
                 mNavigationAccountTv.setText("点击登录");
@@ -164,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.navigation_menu_item_flock:
                 if (mLogin_info != null && mLogin_info.getBoolean("isLogin", false)) {
-                    if (!mLogin_info.getBoolean("isLogin",false)) {
+                    if (!mLogin_info.getBoolean("isLogin", false)) {
                         Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
                     } else if (mLogin_info.getString("memberLevel", "青铜").equals("青铜")) {
                         Toast.makeText(this, "请先升级会员", Toast.LENGTH_SHORT).show();

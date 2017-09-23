@@ -5,7 +5,7 @@
             <item
                 android:id="@+id/navigation_menu_item_member"
                 android:icon="@drawable/member"
-                android:title="立即充值"/>
+                android:title="续费充值"/>
 
             <item
                 android:id="@+id/navigation_menu_item_flock"
