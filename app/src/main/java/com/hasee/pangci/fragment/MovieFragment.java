@@ -1,5 +1,6 @@
 package com.hasee.pangci.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.CommonAdapter;
 import com.hasee.pangci.bean.Resources;
@@ -30,6 +32,7 @@ public class MovieFragment extends Fragment {
     private ArrayList<Resources> mResourcesBeanArrayList = new ArrayList<>();
     private static final String RESOURCETYPE = "video";
     private View mView;
+    private ProgressDialog mProgressDialog;
 
     @Nullable
     @Override
@@ -46,6 +49,13 @@ public class MovieFragment extends Fragment {
         ButterKnife.bind(this, mView);
         return mView;
     }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mProgressDialog = CommonUtils.buildProgressDialog(getActivity());//加载数据dialog
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -67,8 +77,9 @@ public class MovieFragment extends Fragment {
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                         rlVideoList.setLayoutManager(gridLayoutManager);
                         rlVideoList.setAdapter(adapter);
+                        mProgressDialog.dismiss();//加载完成
                     } else {
-                        Toast.makeText(getActivity(), "非法操作,请重试!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "网络加载出错!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

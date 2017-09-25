@@ -29,12 +29,12 @@
         >
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageView_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:layout_alignBottom="@+id/imageView_right"
             android:layout_alignParentLeft="true"
-            android:layout_alignBottom="@+id/iv_33"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_22"/>
 
         <ImageView
@@ -46,11 +46,11 @@
 
 
         <ImageView
-            android:id="@+id/iv_33"
+            android:id="@+id/imageView_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
             android:layout_alignParentRight="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_33"
             />
 
@@ -159,11 +159,11 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="#80FA7298"
             android:text="注册账号"
             android:textSize="16sp"
             android:layout_marginRight="30dp"
-            android:background="@drawable/register_button_shape"
+            android:textColor="@drawable/btn_register_text_selector"
+            android:background="@drawable/btn_register_selector"
             />
 
         <TextView
@@ -171,11 +171,11 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_button_shape"
+            android:background="@drawable/btn_login_selector"
             android:text="立即登录"
             android:gravity="center"
             android:textSize="16sp"
-            android:textColor="@android:color/white"
+            android:textColor="@drawable/btn_login_text_selector"
             />
 
     </LinearLayout>

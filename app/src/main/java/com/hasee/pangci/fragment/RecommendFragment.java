@@ -1,5 +1,6 @@
 package com.hasee.pangci.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.CommonAdapter;
 import com.hasee.pangci.bean.Resources;
@@ -23,17 +25,14 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
-/**
- * Created by 高俊 on 2017/9/9.
- */
-
-public class RecommendFragment extends Fragment {
+public class RecommendFragment extends Fragment{
     private static final String TAG = "RecommendFragment";
     @BindView(R.id.rl_video_list)
     RecyclerView rlVideoList;
     private ArrayList<Resources> mResourcesBeanArrayList = new ArrayList<>();
     private static final String RESOURCETYPE = "recommend";
     private View mView;
+    private ProgressDialog mProgressDialog;
 
     @Nullable
     @Override
@@ -49,6 +48,12 @@ public class RecommendFragment extends Fragment {
         mView = inflater.inflate(R.layout.recommend_fragment_layout, container, false);
         ButterKnife.bind(this, mView);
         return mView;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mProgressDialog = CommonUtils.buildProgressDialog(getActivity());//加载数据dialog
     }
 
     @Override
@@ -71,8 +76,9 @@ public class RecommendFragment extends Fragment {
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                         rlVideoList.setLayoutManager(gridLayoutManager);
                         rlVideoList.setAdapter(adapter);
+                        mProgressDialog.dismiss();//加载完成
                     } else {
-                        Toast.makeText(getActivity(), "非法操作,请重试!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "网络加载出错!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

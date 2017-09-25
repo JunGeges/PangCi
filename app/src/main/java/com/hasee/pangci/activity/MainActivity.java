@@ -10,18 +10,22 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.Common.DataCleanManagerUtils;
 import com.hasee.pangci.Common.DateFormat;
 import com.hasee.pangci.Common.MessageEvent;
+import com.hasee.pangci.Common.MessageEvent2;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
 import com.hasee.pangci.bean.User;
@@ -130,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     boolean isLogin = mLogin_info.getBoolean("isLogin", false);
                     if (isLogin) {
                         Intent intents = new Intent(MainActivity.this, NotificationActivity.class);
+                        intents.setFlags(0);
                         startActivity(intents);
                     } else {
                         Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
@@ -147,34 +152,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.navigation_menu_item_exit:
-                Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                //清除账号缓存信息
-                DataCleanManagerUtils.cleanSharedPreference(this, "LOGIN_INFO");
-                //清除手势锁的缓存信息
-                DataCleanManagerUtils.cleanSharedPreference(this, "LOCK_INFO");
+                if (mLogin_info.getBoolean("isLogin", false)) {
+                    //清除账号缓存信息
+                    DataCleanManagerUtils.cleanSharedPreference(this, "LOGIN_INFO");
+                    //清除手势锁的缓存信息
+                    DataCleanManagerUtils.cleanSharedPreference(this, "LOCK_INFO");
 
-                mNavigationMemberInfoLl.setVisibility(View.GONE);//隐藏会员信息布局
-                mNavigationAccountTv.setText("点击登录");
-                mHeadCIV.setImageResource(R.drawable.normal_login);
-                isLogin = false;
-                if (mLogin_info != null) {//注销--》更新登录状态
-                    SharedPreferences.Editor edit = mLogin_info.edit();
-                    edit.putBoolean("isLogin", false);
-                    edit.apply();
+                    mNavigationMemberInfoLl.setVisibility(View.GONE);//隐藏会员信息布局
+                    mNavigationAccountTv.setText("点击登录");
+                    mHeadCIV.setImageResource(R.drawable.normal_login);
+                    isLogin = false;
+                    if (mLogin_info != null) {//注销--》更新登录状态
+                        SharedPreferences.Editor edit = mLogin_info.edit();
+                        edit.putBoolean("isLogin", false);
+                        edit.apply();
+                    }
                 }
                 break;
 
             case R.id.navigation_menu_item_flock:
-                if (mLogin_info != null && mLogin_info.getBoolean("isLogin", false)) {
-                    if (!mLogin_info.getBoolean("isLogin", false)) {
-                        Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
-                    } else if (mLogin_info.getString("memberLevel", "青铜").equals("青铜")) {
-                        Toast.makeText(this, "请先升级会员", Toast.LENGTH_SHORT).show();
-                    } else if (!mLogin_info.getString("memberLevel", "青铜").equals("钻石")) {
-                        Toast.makeText(this, "钻石会员才能加入云群!", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "尊贵的会员,请在微信公众后台联系管理员!", Toast.LENGTH_LONG).show();
-                    }
+                if (!mLogin_info.getBoolean("isLogin", false)) {
+                    Toast.makeText(this, "您暂未登录!", Toast.LENGTH_SHORT).show();
+                } else if (mLogin_info.getString("memberLevel", "青铜").equals("青铜")) {
+                    Toast.makeText(this, "请先升级会员", Toast.LENGTH_SHORT).show();
+                } else if (!mLogin_info.getString("memberLevel", "青铜").equals("钻石")) {
+                    Toast.makeText(this, "钻石会员才能加入云群!", Toast.LENGTH_LONG).show();
+                } else {
+                    //弹窗引导去反馈
+                    showDialog();
                 }
                 break;
 
@@ -251,11 +256,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)//默认优先级为0
     public void handleEvent(MessageEvent event) {
         //区分哪里发来的事件
@@ -288,6 +288,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mNavigationResidueTv.setText("会员剩余天数:" + residueDays + "天");
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEvent(MessageEvent2 event2){
+        showDialogs();
     }
 
     private void checkIsLogin() {
@@ -363,5 +368,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onDestroy();
         //取消注册eventBus
         EventBus.getDefault().unregister(this);
+    }
+
+    private void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        /**
+         * 设置内容区域为自定义View
+         */
+        LinearLayout inflate_dialog= (LinearLayout) getLayoutInflater().inflate(R.layout.join_netdisk_dialog,null);
+        builder.setView(inflate_dialog);
+
+        final AlertDialog dialog=builder.create();
+        dialog.show();
+
+        TextView tv_title = (TextView) inflate_dialog.findViewById(R.id.tv_title);
+        tv_title.setText("加入云群");
+        TextView tvConfirm = (TextView) inflate_dialog.findViewById(R.id.tv_comfirm);
+        tvConfirm.setText("去加群");
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,NotificationActivity.class);
+                intent.setFlags(1);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void showDialogs() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.ShowDialog);
+        /**
+         * 设置内容区域为自定义View
+         */
+        RelativeLayout inflate_dialog= (RelativeLayout) getLayoutInflater().inflate(R.layout.action_layout,null);
+        builder.setView(inflate_dialog);
+
+        final AlertDialog dialog=builder.create();
+        dialog.show();
+
+/*        ImageView actionImageView = (ImageView) inflate_dialog.findViewById(R.id.iv_action);
+        Glide.with(this).load(link).into(actionImageView);*/
+
     }
 }

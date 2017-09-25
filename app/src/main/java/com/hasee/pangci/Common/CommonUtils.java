@@ -1,5 +1,6 @@
 package com.hasee.pangci.Common;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,5 +40,14 @@ public class CommonUtils {
         Uri content_url = Uri.parse(url);
         intent.setData(content_url);
         context.startActivity(intent);
+    }
+
+    public static ProgressDialog buildProgressDialog(Context context){
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        return progressDialog;
     }
 }

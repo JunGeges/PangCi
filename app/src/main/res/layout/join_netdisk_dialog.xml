@@ -35,7 +35,7 @@
             android:gravity="left"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="1.请关注微信公众号:壹号电影"
+            android:text="1.尊贵的会员请在留言反馈界面留言"
             android:textColor="#333333"
             android:textSize="14dp"
             />
@@ -48,8 +48,7 @@
             android:gravity="left"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="2.点击该公众号菜单栏“胖次有你”找到充值一栏即可开通"
-            android:maxLines="3"
+            android:text="2.留言内容:我要入群"
             android:textColor="#333333"
             android:textSize="14dp"
             />
@@ -62,10 +61,11 @@
             android:gravity="left"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="3.充值成功后,请重新登录账号，获取会员权限"
+            android:text="3.收到留言的第一时间拉您入群"
             android:textColor="#333333"
             android:textSize="14dp"
             />
+
 
         <View
             android:layout_width="match_parent"

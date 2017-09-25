@@ -3,7 +3,10 @@ package com.hasee.pangci.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +48,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         NotificationBean notificationBean = notificationBeanArrayList.get(position);
 
         if (notificationBean.getTag().equals("1")) {
+            String notificationContent = notificationBean.getNotificationContent();
             //链接 颜色加深 可点击跳转
-            holder.mContentTv.setTextColor(Color.BLUE);
-            holder.mContentTv.setText(Html.fromHtml("<u>"+notificationBean.getNotificationContent()+"</u>"));
+            SpannableString spannableString = new SpannableString(notificationContent);
+            //下划线
+            UnderlineSpan underlineSpan = new UnderlineSpan();
+            spannableString.setSpan(underlineSpan, notificationContent.indexOf(":") + 1, notificationContent.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            //颜色
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.BLUE);
+            spannableString.setSpan(foregroundColorSpan, notificationContent.indexOf(":") + 1, notificationContent.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.mContentTv.setText(spannableString);
         } else {
             holder.mContentTv.setText(notificationBean.getNotificationContent());
         }

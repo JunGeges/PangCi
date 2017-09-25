@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,7 +68,6 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("TAG", "onClick: " + v.toString());
                 finish();
             }
         });
@@ -77,8 +75,6 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         for (CardView cardView : mCardViews) {
             cardView.setOnClickListener(this);
         }
-
-
     }
 
     private void getIntentData() {

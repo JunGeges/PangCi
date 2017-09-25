@@ -40,9 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/login_button_shape"
+        android:background="@drawable/btn_login_selector"
         android:text="提交"
-        android:textColor="@android:color/white"
+        android:textColor="@drawable/btn_login_text_selector"
         android:gravity="center"
         />
 

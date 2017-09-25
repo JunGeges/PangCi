@@ -243,11 +243,11 @@
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/login_button_shape"
+        android:background="@drawable/btn_login_selector"
         android:gravity="center"
         android:text="确认注册"
         android:textSize="18sp"
-        android:textColor="@android:color/white"
+        android:textColor="@drawable/btn_login_text_selector"
         />
 
 

@@ -12,8 +12,10 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.hasee.pangci.Common.MessageEvent;
+import com.hasee.pangci.Common.MessageEvent2;
 import com.hasee.pangci.R;
 import com.hasee.pangci.activity.LoginActivity;
+import com.hasee.pangci.activity.MainActivity;
 import com.hasee.pangci.activity.NotificationActivity;
 import com.hasee.pangci.bean.NotificationBean;
 import com.hasee.pangci.bean.User;
@@ -27,6 +29,7 @@ import cn.bmob.push.PushConstants;
 public class MyPushMessageReceiver extends BroadcastReceiver {
     private static final String NORMAL = "0";
     private static final String LINK = "1";
+    private static final String ACTION = "2";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,12 +42,16 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
                 buildNotification(context, content, title, tag);
 
                 //数据插到本地数据库
-                NotificationBean notificationBean = new NotificationBean();
-                notificationBean.setTag(tag);
-                notificationBean.setNotificationContent(content);
-                notificationBean.save();
-                EventBus.getDefault().post(new MessageEvent(new User(), "receiver"));
-
+                if (tag.equals(ACTION)) {
+                    //通知主页弹窗显示活动详情
+                    EventBus.getDefault().post(new MessageEvent2(content));
+                } else {
+                    NotificationBean notificationBean = new NotificationBean();
+                    notificationBean.setTag(tag);
+                    notificationBean.setNotificationContent(content);
+                    notificationBean.save();
+                    EventBus.getDefault().post(new MessageEvent(new User(), "receiver"));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -59,14 +66,18 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
             intent = new Intent(context, LoginActivity.class);
         } else {
             //登录的情况 区分普通推送与链接推送
-            if(tag.equals(NORMAL)){
+            if (tag.equals(NORMAL)) {
+                //普通消息推送
                 intent = new Intent(context, NotificationActivity.class);
-            }else {
-                //
+            } else if (tag.equals(LINK)) {
+                //资源推送
                 intent = new Intent();
                 intent.setAction("android.intent.action.VIEW");
                 Uri content_url = Uri.parse(content);
                 intent.setData(content_url);
+            } else {
+                //活动推送
+                intent = new Intent(context, MainActivity.class);
             }
         }
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);

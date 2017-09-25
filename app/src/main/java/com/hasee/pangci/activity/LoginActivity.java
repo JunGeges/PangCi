@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnFocusChange;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
@@ -41,13 +43,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText mAccountEditText;
     @BindView(R.id.login_password_et)
     EditText mPassWordEditText;
-    @BindView(R.id.login_not_account_tv)
-    TextView mNotAccountTextView;
     private ProgressDialog mProgressDialog;
     @BindView(R.id.login_tool_bar)
     Toolbar mToolbar;
     private static final int REQUEST_CODE_READ_PHONE_STATE = 0;
     private PermissionManager helper;
+    @BindView(R.id.login_not_account_tv)
+    TextView mNotAccountTextView;
+    @BindView(R.id.imageView_left)
+    ImageView mImageViewLeft;
+    @BindView(R.id.imageView_right)
+    ImageView mImageViewRight;
+
+    @OnFocusChange(R.id.login_password_et) void onChange(View v, boolean hasFocus){
+        if(hasFocus){
+            mImageViewLeft.setImageResource(R.drawable.ic_22_hide);
+            mImageViewRight.setImageResource(R.drawable.ic_33_hide);
+        }else {
+            mImageViewLeft.setImageResource(R.drawable.ic_22);
+            mImageViewRight.setImageResource(R.drawable.ic_33);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+
         mLoginTextView.setOnClickListener(this);
         mNotAccountTextView.setOnClickListener(this);
         mToolbar.setTitle("登录");

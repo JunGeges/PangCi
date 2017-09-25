@@ -2,9 +2,10 @@ package com.hasee.pangci.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,10 @@ import com.bumptech.glide.Glide;
 import com.hasee.pangci.Common.CommonUtils;
 import com.hasee.pangci.Common.Constant;
 import com.hasee.pangci.R;
+import com.hasee.pangci.activity.LoginActivity;
+import com.hasee.pangci.activity.MemberCenterActivity;
 import com.hasee.pangci.bean.Resources;
+import com.hasee.pangci.bean.User;
 import com.hasee.pangci.interfaces.RecyclerItemOnClickListener;
 
 import java.util.ArrayList;
@@ -31,10 +35,17 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
     private Context context;
     private String videoUrl;//视频地址
     private RecyclerItemOnClickListener mRecyclerItemOnClickListener;
+    private int flag = 0;//0 跳登录 1 跳重置
+    private User mUser = new User();
+
 
     public CommonAdapter(ArrayList<Resources> vlist, Context context) {
         this.mResourcesBeanArrayList = vlist;
         this.context = context;
+        SharedPreferences login_info = context.getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
+        mUser.setUserHeadImg(login_info.getInt("headImg", R.drawable.normal_login));
+        mUser.setUserAccount(login_info.getString("account", "请登录"));
+        mUser.setMemberLevel(login_info.getString("memberLevel", "请先登录"));
     }
 
     @Override
@@ -48,8 +59,8 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
     public void onBindViewHolder(viewHolder holder, final int position) {
         if (position == mResourcesBeanArrayList.size() - 1 || position == mResourcesBeanArrayList.size() - 2) {
             //给最后一个view添加底部margin
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(CommonUtils.dp2px(160,context),CommonUtils.dp2px(200,context));
-            layoutParams.setMargins(CommonUtils.dp2px(10,context), CommonUtils.dp2px(10,context), 0, CommonUtils.dp2px(10,context));
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(CommonUtils.dp2px(160, context), CommonUtils.dp2px(200, context));
+            layoutParams.setMargins(CommonUtils.dp2px(10, context), CommonUtils.dp2px(10, context), 0, CommonUtils.dp2px(10, context));
             holder.itemView.setLayoutParams(layoutParams);
 
         }
@@ -61,11 +72,11 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
         switch (resourcesBean.getCoverhttptype()) {
             case "0":
                 //封面地址
-                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).placeholder(R.drawable.vip).error(R.drawable.ic_load_empty).into(holder.ivCover);
+                Glide.with(context).load(Constant.ICONZEROHEADERURL + resourcesBean.getCover()).placeholder(R.drawable.vip).error(R.drawable.ic_upper_loading_failed).into(holder.ivCover);
                 break;
 
             case "1":
-                Glide.with(context).load(resourcesBean.getCover()).error(R.drawable.ic_load_empty).into(holder.ivCover);
+                Glide.with(context).load(resourcesBean.getCover()).error(R.drawable.ic_upper_loading_failed).into(holder.ivCover);
                 break;
         }
 
@@ -92,28 +103,29 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
                 }
                 //判断是否已经登录
                 if (!isLogin) {
-                    buildDialog("请登录之后观看!");
+                    flag = 0;
+                    buildDialog("请登录之后观看!", "去登录", flag);
                     return;
                 }
                 //判断是否是免费还是收费
                 if (resourcesBean.getAuthority().equals("common")) {
                     //免费直接看
-                    CommonUtils.openURL(videoUrl,context);
-                    Log.i("Adapter", position + "---" + videoUrl);
+                    CommonUtils.openURL(videoUrl, context);
                 } else {
                     //1.收费
                     //2.看是否是付费会员
                     if (mMemberLevel.equals("青铜")) {
+                        flag = 1;
                         //没付费会员提示开通会员
-                        buildDialog("请先升级更高级会员观看!");
+                        buildDialog("请升级为付费会员观看!", "去充值", flag);
                     } else {
                         //付费会员直接看 看会员是否到期
                         if (login_info.getBoolean("isExpire", false)) {
-                            buildDialog("您的会员已到期,请续费后观看!");
+                            flag = 1;
+                            buildDialog("您的会员已到期,请续费后观看!", "去充值", flag);
                             return;
                         }
-                        CommonUtils.openURL(videoUrl,context);
-                        Log.i("Adapter", position + "---" + videoUrl);
+                        CommonUtils.openURL(videoUrl, context);
                     }
                 }
             }
@@ -121,18 +133,31 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.viewHolder
 
     }
 
-    private void buildDialog(String promptContent) {
+    private void buildDialog(String promptContent, String btnText, final int flag) {
         final AlertDialog hintDialog = new AlertDialog.Builder(context, R.style.ShowDialog).create();
-        View inflate_dialog = LayoutInflater.from(context).inflate(R.layout.play_dialog_hint, null);
+        final View inflate_dialog = LayoutInflater.from(context).inflate(R.layout.play_dialog_hint, null);
         hintDialog.show();
         hintDialog.setContentView(inflate_dialog);
         TextView tvContent = (TextView) inflate_dialog.findViewById(R.id.tv_content);
         tvContent.setText(promptContent);
         TextView tvConfirm = (TextView) inflate_dialog.findViewById(R.id.tv_comfirm);
+        tvConfirm.setText(btnText);
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hintDialog.dismiss();
+                if (flag == 0) {
+                    Intent in = new Intent(context, LoginActivity.class);
+                    context.startActivity(in);
+                    hintDialog.dismiss();
+                } else {
+                    Intent intent = new Intent(context, MemberCenterActivity.class);
+                    intent.setFlags(1);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("user", mUser);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                    hintDialog.dismiss();
+                }
             }
         });
     }

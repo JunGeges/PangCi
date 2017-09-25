@@ -27,8 +27,8 @@ public class NotificationActivity extends AppCompatActivity {
     ViewPager mViewPager;
     private FeedBackFragment feedBackFragment = new FeedBackFragment();
     private NotificationFragment notificationFragment = new NotificationFragment();
-    private Fragment[] fragments ={notificationFragment,feedBackFragment};
-    private String[] titles = {"系统消息","帮助与反馈"};
+    private Fragment[] fragments = {notificationFragment, feedBackFragment};
+    private String[] titles = {"系统消息", "帮助与反馈"};
     private ArrayList<Fragment> mFragmentArrayList = new ArrayList<>();
 
     @Override
@@ -49,12 +49,27 @@ public class NotificationActivity extends AppCompatActivity {
             mFragmentArrayList.add(fragments[i]);
         }
 
-        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),mFragmentArrayList);
+        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentArrayList);
         mViewPager.setAdapter(myFragmentPagerAdapter);
         //关联彼此
         mTabLayout.setupWithViewPager(mViewPager);
         for (int i = 0; i < titles.length; i++) {
             mTabLayout.getTabAt(i).setText(titles[i]);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int flags = getIntent().getFlags();
+        switch (flags) {
+            case 0:
+                mViewPager.setCurrentItem(0);
+                break;
+
+            case 1:
+                mViewPager.setCurrentItem(1);
+                break;
         }
     }
 }
