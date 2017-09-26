@@ -17,15 +17,14 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.Common.DataCleanManagerUtils;
 import com.hasee.pangci.Common.DateFormat;
 import com.hasee.pangci.Common.MessageEvent;
-import com.hasee.pangci.Common.MessageEvent2;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
 import com.hasee.pangci.bean.User;
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);//禁止截屏
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
@@ -290,10 +290,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleEvent(MessageEvent2 event2){
-        showDialogs();
-    }
+
+/*    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEvent(MessageEvent2 event2) {
+        isAction = true;
+        link = event2.getLink();
+        showDialogs(event2.getLink());
+    }*/
 
     private void checkIsLogin() {
         mLogin_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
@@ -376,10 +379,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /**
          * 设置内容区域为自定义View
          */
-        LinearLayout inflate_dialog= (LinearLayout) getLayoutInflater().inflate(R.layout.join_netdisk_dialog,null);
+        LinearLayout inflate_dialog = (LinearLayout) getLayoutInflater().inflate(R.layout.join_netdisk_dialog, null);
         builder.setView(inflate_dialog);
 
-        final AlertDialog dialog=builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
 
         TextView tv_title = (TextView) inflate_dialog.findViewById(R.id.tv_title);
@@ -389,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,NotificationActivity.class);
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
                 intent.setFlags(1);
                 startActivity(intent);
                 dialog.dismiss();
@@ -397,19 +400,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void showDialogs() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.ShowDialog);
-        /**
+/*    private void showDialogs(String link) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ShowDialog);
+        *//**
          * 设置内容区域为自定义View
-         */
-        RelativeLayout inflate_dialog= (RelativeLayout) getLayoutInflater().inflate(R.layout.action_layout,null);
+         *//*
+        View inflate_dialog = getLayoutInflater().inflate(R.layout.action_layout, null);
         builder.setView(inflate_dialog);
 
-        final AlertDialog dialog=builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
 
-/*        ImageView actionImageView = (ImageView) inflate_dialog.findViewById(R.id.iv_action);
-        Glide.with(this).load(link).into(actionImageView);*/
+        ImageView actionImageView = (ImageView) inflate_dialog.findViewById(R.id.iv_action);
+        Glide.with(this).load(link).error(R.drawable.aaa).into(actionImageView);
+        actionImageView.setImageResource(R.drawable.ic_upper_loading_failed);
 
-    }
+
+        ImageView deleteImageView = (ImageView) inflate_dialog.findViewById(R.id.iv_delete);
+        deleteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }*/
 }

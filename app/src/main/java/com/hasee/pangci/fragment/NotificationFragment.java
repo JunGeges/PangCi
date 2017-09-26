@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,7 +121,6 @@ public class NotificationFragment extends Fragment implements RecyclerItemOnClic
         String notificationContent = notificationBean.getNotificationContent();
         int indexOf = notificationContent.indexOf(":");
         String substring = notificationContent.substring(indexOf + 1, notificationContent.length());//包前不包后
-        Log.i("aasasasas----", substring);
         if (notificationBean.getTag().equals("1")) {
             Intent intent = new Intent();
             intent.setAction("android.intent.action.VIEW");

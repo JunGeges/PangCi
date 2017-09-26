@@ -24,8 +24,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MemberCenterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.ll_zhifubao)
-    LinearLayout llZhifubao;
     @BindView(R.id.ll_weixin)
     LinearLayout llWeixin;
     @BindView(R.id.member_center_tool_bar)
@@ -62,7 +60,6 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
 
     private void initEvents() {
         llWeixin.setOnClickListener(this);
-        llZhifubao.setOnClickListener(this);
 
         mToolbar.setTitle("会员中心");
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -127,10 +124,6 @@ public class MemberCenterActivity extends AppCompatActivity implements View.OnCl
         switch (v.getId()) {
             case R.id.ll_weixin:
                 showDialog("1.请关注微信公众号“壹号电影", "2.点击该公众号菜单栏“胖次有你”找到充值一栏即可开通", "3.充值成功后,请重新登录账号，获取会员权限");
-                break;
-            //15386492280
-            case R.id.ll_zhifubao:
-                showDialog("1.付款账号:15386492280", "2.转账支付请务必留言应用账号，收到后我们将在第一时间内为留言账号开通会员", "3.充值成功后,请重新登录账号，获取会员权限");
                 break;
 
             case R.id.member_center_v1_cv:

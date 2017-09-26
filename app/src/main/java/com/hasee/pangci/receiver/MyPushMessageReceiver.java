@@ -78,6 +78,7 @@ public class MyPushMessageReceiver extends BroadcastReceiver {
             } else {
                 //活动推送
                 intent = new Intent(context, MainActivity.class);
+                intent.putExtra("link",content);
             }
         }
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
