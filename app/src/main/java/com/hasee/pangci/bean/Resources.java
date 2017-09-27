@@ -2,9 +2,7 @@ package com.hasee.pangci.bean;
 
 import cn.bmob.v3.BmobObject;
 
-/**
- * Created by Administrator on 2017/9/14.
- */
+
 
 public class Resources extends BmobObject {
 

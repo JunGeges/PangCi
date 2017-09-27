@@ -1,22 +1,20 @@
 package com.hasee.pangci.Common;
 
-/**
- * Created by Administrator on 2017/9/25.
- */
+
 
 public class MessageEvent2 {
 
-    private String link;
+    private String notice;
 
-    public MessageEvent2(String link) {
-        this.link = link;
+    public MessageEvent2(String notice) {
+        this.notice = notice;
     }
 
-    public String getLink() {
-        return link;
+    public String getNotice() {
+        return notice;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setNotice(String notice) {
+        this.notice = notice;
     }
 }

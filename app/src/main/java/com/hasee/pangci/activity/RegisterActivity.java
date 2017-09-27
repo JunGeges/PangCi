@@ -71,12 +71,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String againPwd = mPasswordAgainEt.getText().toString().trim();
 
         if (CommonUtils.checkStrIsNull(account, password, againPwd)) {
-            Toast.makeText(this, "选项不能为空!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "选项不能为空!", Toast.LENGTH_LONG).show();
         } else if (account.length() < 6 || password.length() < 6) {
-            Toast.makeText(this, "长度不得小于6!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "长度不得小于6!", Toast.LENGTH_LONG).show();
         } else if (!password.equals(againPwd)) {
-            Toast.makeText(this, "密码输入不一致!", Toast.LENGTH_SHORT).show();
-        }else {
+            Toast.makeText(this, "密码输入不一致!", Toast.LENGTH_LONG).show();
+        } else if (!account.matches("[a-zA-Z]{1}[a-zA-Z0-9_]{1,15}")) {
+            Toast.makeText(this, "账号由字母数字下划线组成且开头必须是字母，不能超过16位", Toast.LENGTH_LONG).show();
+        } else if (!password.matches("[a-zA-Z0-9]{1,16}")) {
+            Toast.makeText(this, "密码由字母和数字构成，不能超过16位", Toast.LENGTH_LONG).show();
+        } else {
             //判断账号是否存在
             BmobQuery<User> bmobQuery = new BmobQuery<>();
             bmobQuery.addWhereEqualTo("userAccount", account);
@@ -86,8 +90,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if (e == null) {
                         //查询成功
                         if (list.size() != 0) {
-                            Toast.makeText(RegisterActivity.this, "账号已存在!", Toast.LENGTH_SHORT).show();
-                        }else {
+                            Toast.makeText(RegisterActivity.this, "账号已存在!", Toast.LENGTH_LONG).show();
+                        } else {
                             //查询邀请人是否存在
                             if (!TextUtils.isEmpty(inviter)) {//邀请人可以为空
                                 BmobQuery<User> bmobQuerys = new BmobQuery<>();
@@ -98,8 +102,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                         if (e == null) {
                                             //查询成功
                                             if (list.size() == 0) {
-                                                Toast.makeText(RegisterActivity.this, "邀请人不存在!", Toast.LENGTH_SHORT).show();
-                                            }else {
+                                                Toast.makeText(RegisterActivity.this, "邀请人不存在!", Toast.LENGTH_LONG).show();
+                                            } else {
                                                 //给邀请人加积分
                                                 updateAndQueryDb(inviter);
                                                 //新注册用户插入数据库
@@ -107,11 +111,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                             }
                                         } else {
                                             //查询失败
-                                            Toast.makeText(RegisterActivity.this, "非法操作,请重试!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(RegisterActivity.this, "服务器繁忙,请稍后重试", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
-                            }else {
+                            } else {
                                 //给邀请人加积分
                                 updateAndQueryDb(inviter);
                                 //新注册用户插入数据库
@@ -120,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         }
                     } else {
                         //查询失败
-                        Toast.makeText(RegisterActivity.this, "非法操作,请重试!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "服务器繁忙,请稍后重试", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

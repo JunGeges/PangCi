@@ -2,9 +2,6 @@ package com.hasee.pangci.Common;
 
 import com.hasee.pangci.bean.User;
 
-/**
- * Created by Administrator on 2017/9/11.
- */
 
 public class MessageEvent {
 

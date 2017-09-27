@@ -62,6 +62,9 @@ public class UpdatePasswordActivity extends AppCompatActivity {
         } else if (!password.equals(againPassword) || password.length() < 6) {
             Toast.makeText(this, "密码输入不一致且长度大于6位数!", Toast.LENGTH_SHORT).show();
             return;
+        }else if (!password.matches("[a-zA-Z0-9]{1,16}")) {
+            Toast.makeText(this, "密码由字母和数字构成，不能超过16位", Toast.LENGTH_LONG).show();
+            return;
         }
         //由于只能通过objectId修改数据 先根据用户名查询到id
         BmobQuery<User> bmobQuery = new BmobQuery<>();
@@ -78,7 +81,7 @@ public class UpdatePasswordActivity extends AppCompatActivity {
                         Toast.makeText(UpdatePasswordActivity.this, "账号不存在!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(UpdatePasswordActivity.this, "非法操作!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpdatePasswordActivity.this, "服务器繁忙,请稍后重试", Toast.LENGTH_SHORT).show();
                 }
             }
         });

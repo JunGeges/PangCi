@@ -6,9 +6,6 @@ import java.io.Serializable;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobDate;
 
-/**
- * Created by Administrator on 2017/9/11.
- */
 
 public class User extends BmobObject implements Serializable {
 

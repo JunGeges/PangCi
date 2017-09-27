@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -159,22 +158,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                         Toast.makeText(LoginActivity.this, "登录成功!", Toast.LENGTH_SHORT).show();
                         EventBus.getDefault().post(new MessageEvent(userTemp, "login"));
-                        Log.i("-----aaa", userTemp.toString());
                         //主页面
                         finish();
-                        //不显示不知道为啥？？？
- /*                       runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                initProgressDialog();
-                            }
-                        });*/
                     } else {
                         Toast.makeText(LoginActivity.this, "账号或密码输入错误!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.i("TAG", "error: " + e.getMessage());
-                    Toast.makeText(LoginActivity.this, "非法操作,请重试" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "服务器繁忙,请稍后重试", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -192,17 +182,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAccountEditText.setText(userNew.getUserAccount());
         mPassWordEditText.setText(userNew.getUserPassword());
         checkIsExitUser();
-    }
-
-    private void initProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setCancelable(true);
-            mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.setMessage("正在登录...");
-        }
-        mProgressDialog.show();
     }
 
     boolean temp;

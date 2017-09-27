@@ -8,9 +8,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.TypedValue;
 
-/**
- * Created by Administrator on 2017/9/12.
- */
+
 
 public class CommonUtils {
     //检查字符串是否为null or ＂＂

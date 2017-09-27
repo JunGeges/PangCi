@@ -2,6 +2,7 @@ package com.hasee.pangci.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -15,16 +16,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hasee.pangci.Common.DataCleanManagerUtils;
 import com.hasee.pangci.Common.DateFormat;
 import com.hasee.pangci.Common.MessageEvent;
+import com.hasee.pangci.Common.MessageEvent2;
+import com.hasee.pangci.Common.MessageEventNotice;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
 import com.hasee.pangci.bean.User;
@@ -33,6 +38,7 @@ import com.hasee.pangci.fragment.MemberFragment;
 import com.hasee.pangci.fragment.MovieFragment;
 import com.hasee.pangci.fragment.NetdiskFragment;
 import com.hasee.pangci.fragment.RecommendFragment;
+import com.hasee.pangci.widget.FadeInTextView;
 import com.tencent.bugly.beta.Beta;
 
 import org.greenrobot.eventbus.EventBus;
@@ -60,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout mDrawerLayout;
     @BindView(R.id.main_fab)
     FloatingActionButton mFloatingActionButton;
+    @BindView(R.id.tv_marquee)
+    TextView mNoticeTextView;
 
     private MemberFragment memberFragment = new MemberFragment();
     private RecommendFragment recommendFragment = new RecommendFragment();
@@ -291,12 +299,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-/*    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleEvent(MessageEvent2 event2) {
-        isAction = true;
-        link = event2.getLink();
-        showDialogs(event2.getLink());
-    }*/
+        mNoticeTextView.setText(event2.getNotice());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEvent(MessageEventNotice messageEventNotice) {
+        showPopWindow(messageEventNotice.getContent());
+    }
+
+    private void showPopWindow(String content) {
+        View view = LayoutInflater.from(this).inflate(R.layout.notice_layout, mDrawerLayout, false);
+        final PopupWindow popupWindow = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        //设置外部点击消失
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(mDrawerLayout, Gravity.BOTTOM, 0, 0);
+
+        FadeInTextView fadeInTextView = (FadeInTextView) view.findViewById(R.id.notice_fade_in_tv);
+        fadeInTextView.setTextString(content)
+                .startFadeInAnimation()
+                .setTextAnimationListener(new FadeInTextView.TextAnimationListener() {
+                    @Override
+                    public void animationFinish() {
+                        Toast.makeText(MainActivity.this, "完毕!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        view.findViewById(R.id.notice_action_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
+                startActivity(intent);
+                popupWindow.dismiss();
+            }
+        });
+    }
 
     private void checkIsLogin() {
         mLogin_info = getSharedPreferences("LOGIN_INFO", MODE_PRIVATE);
@@ -403,8 +443,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 /*    private void showDialogs(String link) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ShowDialog);
         *//**
-         * 设置内容区域为自定义View
-         *//*
+     * 设置内容区域为自定义View
+     *//*
         View inflate_dialog = getLayoutInflater().inflate(R.layout.action_layout, null);
         builder.setView(inflate_dialog);
 
