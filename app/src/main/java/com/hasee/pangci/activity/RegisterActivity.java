@@ -93,7 +93,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Toast.makeText(RegisterActivity.this, "账号已存在!", Toast.LENGTH_LONG).show();
                         } else {
                             //查询邀请人是否存在
-                            if (!TextUtils.isEmpty(inviter)) {//邀请人可以为空
+                            if (!TextUtils.isEmpty(inviter)) {
+                                //邀请人不为空
                                 BmobQuery<User> bmobQuerys = new BmobQuery<>();
                                 bmobQuerys.addWhereEqualTo("userAccount", inviter);
                                 bmobQuerys.findObjects(new FindListener<User>() {
@@ -104,10 +105,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                             if (list.size() == 0) {
                                                 Toast.makeText(RegisterActivity.this, "邀请人不存在!", Toast.LENGTH_LONG).show();
                                             } else {
-                                                //给邀请人加积分
-                                                updateAndQueryDb(inviter);
-                                                //新注册用户插入数据库
-                                                insertDataToServer(account, password, inviter);
+                                                final BmobQuery<User> bmobQuery = new BmobQuery<>();
+                                                bmobQuery.addWhereEqualTo("userAccount", inviter);
+                                                bmobQuery.findObjects(new FindListener<User>() {
+                                                    @Override
+                                                    public void done(List<User> list, BmobException e) {
+                                                        if (e == null) {
+                                                            String imei = list.get(0).getUserIMEI();
+                                                            //判断邀请人是不是之前自己注册的账号(根据IMEI值来判断)
+                                                            //查询被邀请人的IMEI值
+                                                            if (CommonUtils.getPhoneImei(RegisterActivity.this).equals(imei)) {
+                                                                //邀请人是之前自己的账号
+                                                                Toast.makeText(RegisterActivity.this, "邀请码不能是自己已注册的账号!", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                //邀请人不是自己已注册的账号
+                                                                //给邀请人加积分
+                                                                updateAndQueryDb(inviter);
+                                                                //新注册用户插入数据库
+                                                                insertDataToServer(account, password, inviter);
+                                                            }
+                                                        }
+                                                    }
+                                                });
                                             }
                                         } else {
                                             //查询失败
@@ -116,8 +135,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                     }
                                 });
                             } else {
-                                //给邀请人加积分
-                                updateAndQueryDb(inviter);
+                                //邀请人为空
                                 //新注册用户插入数据库
                                 insertDataToServer(account, password, inviter);
                             }
@@ -129,6 +147,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             });
         }
+    }
+
+    private void queryImei(final String inviter, final String account, final String password) {
+
     }
 
     private void insertDataToServer(String account, String password, String inviter) {

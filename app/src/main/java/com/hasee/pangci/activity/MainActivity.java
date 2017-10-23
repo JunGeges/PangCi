@@ -32,6 +32,7 @@ import com.hasee.pangci.Common.MessageEvent2;
 import com.hasee.pangci.Common.MessageEventNotice;
 import com.hasee.pangci.R;
 import com.hasee.pangci.adapter.MyFragmentPagerAdapter;
+import com.hasee.pangci.bean.Notice;
 import com.hasee.pangci.bean.User;
 import com.hasee.pangci.fragment.AnimeFragment;
 import com.hasee.pangci.fragment.MemberFragment;
@@ -44,6 +45,7 @@ import com.tencent.bugly.beta.Beta;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -101,6 +103,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void initView() {
         mNavigationView.setNavigationItemSelectedListener(this);
         mFloatingActionButton.setOnClickListener(this);
+        //初始化公告栏
+        Notice notice = DataSupport.findLast(Notice.class);
+        if (notice == null) {
+            mNoticeTextView.setText(getString(R.string.notice));
+        } else {
+            mNoticeTextView.setText(notice.getNotice());
+        }
     }
 
     public void initData() {
@@ -301,6 +310,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleEvent(MessageEvent2 event2) {
+        //存到本地数据库
+        Notice notice = new Notice();
+        notice.setNotice(event2.getNotice());
+        notice.save();
         mNoticeTextView.setText(event2.getNotice());
     }
 

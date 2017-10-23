@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_integral_acitvity"
-    android:layout_width="match_parent"
+              android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
@@ -54,7 +53,6 @@
         />
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -105,7 +103,7 @@
                 android:layout_below="@+id/yuekas"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:text="一个月会员"
+                android:text="1个月会员"
                 android:textColor="#999999"
                 android:textSize="12dp"
                 />
@@ -144,7 +142,7 @@
         android:text="1.首次注册赠送积分20"
         android:textColor="#999999"
         android:textSize="14sp"
-        android:id="@+id/textView2" />
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -162,7 +160,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         android:text="3.邀请好友注册赠送积分20，邀请码为自己的账号,
-   邀请成功后，注销重新登录即可获取"
+   邀请成功后，注销重新登录即可获取积分"
         android:textColor="#999999"
         android:textSize="14sp"
         />
@@ -187,17 +185,5 @@
         android:textColor="#999999"
         android:textSize="14sp"
         />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:text="6.禁止注册账号之后重复注册邀请自己先前的账号来获取积
-    分,后台检测到将自动封停与之相关的所有账号"
-        android:textColor="#FF0000"
-        android:textSize="14sp"
-        />
-
 
 </LinearLayout>

@@ -185,10 +185,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     boolean temp;
-
+    
     //动态申请权限
     public boolean gradePermissionManager() {
-
         helper = PermissionManager.with(this)
                 .addRequestCode(REQUEST_CODE_READ_PHONE_STATE)
                 .permissions(Manifest.permission.READ_PHONE_STATE)

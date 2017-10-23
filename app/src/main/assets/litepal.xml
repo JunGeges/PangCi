@@ -6,5 +6,6 @@
 
     <list>
         <mapping class="com.hasee.pangci.bean.NotificationBean"></mapping>
+        <mapping class="com.hasee.pangci.bean.Notice"></mapping>
     </list>
 </litepal>
